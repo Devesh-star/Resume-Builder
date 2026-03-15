@@ -9,7 +9,7 @@ import axiosInstance from '../utils/axiosInstance'
 import { API_PATHS } from '../utils/apiPaths'
 import toast from 'react-hot-toast'
 import { fixTailwindColors } from '../utils/colors'
-import html2pdf from 'html2pdf.js'
+import html2pdf from "html2pdf.js/dist/html2pdf.bundle.min.js";
 import StepProgress from './StepProgress'
 import {
   ProfileInfoForm,
