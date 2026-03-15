@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import { inputStyles, photoSelectorStyles, titleInputStyles } from '../assets/dummystyle'
 import {Check, Edit, Eye, EyeOff} from 'lucide-react'
 
