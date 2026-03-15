@@ -102,7 +102,7 @@ const SignUp = ({ setCurrentPage }) => {
           Already have an account?{" "}
           <button
             type="button"
-            onClick={() => setCurrentPa("login")}
+            onClick={() => setCurrentPage("login")}
             className={styles.signupSwitchButton}
           >
             Sign In

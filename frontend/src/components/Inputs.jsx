@@ -24,7 +24,7 @@ export const Inputs = ({ value, onChange, label, placeholder, type = 'text' }) =
                 {type === 'password' && (
                     <button type='button' onClick={() => setshowPassword(!showPassword)}
                     className={styles.toggleButton}>
-                        {showPassword ? <Eyeoff size={20}/> : <Eye size={20}/>}
+                        {showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
                     </button>
                 )}
             </div>
