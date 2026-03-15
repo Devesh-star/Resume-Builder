@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://resume-builder-backend-xnu0.onrender.com';
+export const BASE_URL = 'https://resume-i0l0.onrender.com';
 
 export const API_PATHS = {
   AUTH: {
