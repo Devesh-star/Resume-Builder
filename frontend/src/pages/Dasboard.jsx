@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { LucideFilePlus, LucideTrash, LucideTrash2 } from "lucide-react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
-import { ResumeSummaryCard } from "../components/cards";
+import { ResumeSummaryCard } from "./components/cards";
 import toast from "react-hot-toast";
 import { differenceInDays } from "date-fns";
 import Modal from "../components/Modal";
