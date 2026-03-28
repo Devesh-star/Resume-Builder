@@ -293,7 +293,7 @@ const LandingPage = () => {
       <footer className={landingPageStyles.footer}>
               <div className={landingPageStyles.footerContainer}>
                 <p className={landingPageStyles.footerText}>
-                  Crafted with <span className={landingPageStyles.footerHeart}>❤️</span> by Gauri Sharma
+                  Crafted with <span className={landingPageStyles.footerHeart}>❤️</span> by Devesh Malik
                 </p>
               </div>
       </footer>
