@@ -148,7 +148,7 @@ const Dashboard = () => {
         {!loading && allResumes.length === 0 && (
           <div className={styles.emptyStateWrapper}>
             <div className={styles.emptyIconWrapper}>
-              <LucideFilePlus size={32} className="text-violet-600" />
+              <LucideFilePlus size={32} className="text-cyan-400" />
             </div>
 
             <h3 className={styles.emptyTitle}>No Resumes Yet</h3>
@@ -235,7 +235,7 @@ const Dashboard = () => {
         <div className="p-4">
           <div className="flex flex-col items-center text-center">
             <div className={styles.deleteIconWrapper}>
-              <LucideTrash2 className='text-orange-600' size={24}/>
+              <LucideTrash2 className='text-red-400' size={24}/>
             </div>
             <h3 className={styles.deleteTitle}>Delete Resume?</h3>
             <p className={styles.deleteText}>

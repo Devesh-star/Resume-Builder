@@ -122,9 +122,9 @@ const LandingPage = () => {
 
               <div className={landingPageStyles.statsContainer}>
                 {[
-                  { value: '50K+', label: 'Resumes Created', gradient: 'from-violet-600 to-fuchsia-600' },
-                  { value: '4.9★', label: 'User Rating', gradient: 'from-orange-500 to-red-500' },
-                  { value: '5 Min', label: 'Build Time', gradient: 'from-emerald-500 to-teal-500' }
+                  { value: '50K+', label: 'Resumes Created', gradient: 'from-cyan-400 to-violet-500' },
+                  { value: '4.9★', label: 'User Rating', gradient: 'from-amber-400 to-orange-500' },
+                  { value: '5 Min', label: 'Build Time', gradient: 'from-emerald-400 to-teal-500' }
                 ].map((stat, idx) => {
                   return (
                     <div className={landingPageStyles.statItem} key={idx}>
@@ -153,12 +153,12 @@ const LandingPage = () => {
                   {/* Background */}
                   <defs>
                     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#8b5cf6" />
-                      <stop offset="100%" stopColor="#d946ef" />
+                      <stop offset="0%" stopColor="#06b6d4" />
+                      <stop offset="100%" stopColor="#8b5cf6" />
                     </linearGradient>
                     <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="100%" stopColor="#f8fafc" />
+                      <stop offset="0%" stopColor="#1e293b" />
+                      <stop offset="100%" stopColor="#0f172a" />
                     </linearGradient>
                   </defs>
 

@@ -673,7 +673,7 @@ const EditResume = () => {
               title: value,
             }))} />
 
-          <div className='flex flex-gap item gap-3'>
+          <div className='flex flex-gap items-center gap-3'>
             <button onClick={() => setOpenThemeSelector(true)} className={buttonStyles.theme}>
               <Palette size={16} />
               <span className='text-sm'>Theme</span>

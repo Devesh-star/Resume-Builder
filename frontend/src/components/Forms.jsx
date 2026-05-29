@@ -38,7 +38,7 @@ export const AdditionalInfoForm = ({ languages, interests, updateArrayItem, addA
                   onChange={({ target }) => updateArrayItem("languages", index, "name", target.value)}
                 />
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-4">Proficiency</label>
+                  <label className="block text-sm font-bold text-slate-300 mb-4">Proficiency</label>
                   <RatingInput
                     value={lang.progress || 0}
                     total={5}
@@ -320,7 +320,7 @@ export const ProfileInfoForm = ({ profileData, updateSection }) => {
           />
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-bold text-slate-700 mb-3">Summary</label>
+            <label className="block text-sm font-bold text-slate-300 mb-3">Summary</label>
             <textarea
               className={profileInfoStyles.textarea}
               rows={4}
@@ -354,7 +354,7 @@ export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, 
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-700 mb-3">Description</label>
+                <label className="block text-sm font-bold text-slate-300 mb-3">Description</label>
                 <textarea
                   placeholder="Short description about the project"
                   className={projectDetailStyles.textarea}
@@ -428,7 +428,7 @@ export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, remo
               />
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-3">
+                <label className="block text-sm font-bold text-slate-300 mb-3">
                   Proficiency ({skill.progress ? Math.round(skill.progress / 20) : 0}/5)
                 </label>
                 <div className="mt-2">
@@ -511,7 +511,7 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-bold text-slate-700 mb-3">Description</label>
+              <label className="block text-sm font-bold text-slate-300 mb-3">Description</label>
               <textarea
                 placeholder="What did you do in this role?"
                 className={workExperienceStyles.textarea}

@@ -6,13 +6,13 @@ const StepProgress = ({progress}) => {
   return (
     <>
       <style>{shimmerStyle}</style>
-      <div className='relative w-full h-4 bg-white/5 backdrop-blur-2xl overflow-hidden rounded-full border border-white/10'>
-        <div className='absolute inset-0 bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 animate-pulse'/>
+      <div className='relative w-full h-4 bg-slate-800/50 backdrop-blur-2xl overflow-hidden rounded-full border border-slate-700/30'>
+        <div className='absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 animate-pulse'/>
 
-        <div className='relative h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-violet-600 
+        <div className='relative h-full bg-gradient-to-r from-cyan-500 via-violet-500 to-cyan-600 
         animate-flow bg-[length:200%_100%] transition-all duration-700 ease-out rounded-full overflow-hidden
         animate-pulse-glow' style={{width: `${progress}%`}}>
-            <div className='absolue inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer'/>
+            <div className='absolue inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer'/>
             <div className='absolute inset-0 opacity-80'>
                 {[...Array(8)].map((_,i) => (
                     <div key={i} className='absolut top-1/2 w-2 h-2 bg-white rounded-full animate-bubble shadow-lg'
@@ -40,13 +40,13 @@ const StepProgress = ({progress}) => {
         </div>
 
         {progress > 0 && (
-            <div className='absolute top-0 h-full w-8 bg-gradient-to-r from-transparent via-white/60 to-white/30 blur-sm' style={{ left: `${Math.max(0,progress-4)}%`}}>
+            <div className='absolute top-0 h-full w-8 bg-gradient-to-r from-transparent via-white/40 to-white/20 blur-sm' style={{ left: `${Math.max(0,progress-4)}%`}}>
             </div>
         )}
       </div>
 
       <div className='flex justify-between items-center mt-3'>
-        <div className='text-xs font-bold text-gray/60'>
+        <div className='text-xs font-bold text-slate-500'>
             {progress < 25 
             ? "Getting Started"
             : progress < 50 
@@ -58,7 +58,7 @@ const StepProgress = ({progress}) => {
 
         <div className='flex items-center gap-2'> 
             {progress === 100 && (
-                <div className='w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center'>
+                <div className='w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/20'>
                     <Check size={12} className='text-white'/>
                 </div>
             )}
