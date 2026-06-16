@@ -29,7 +29,7 @@ app.use('/api/resume', resumeRoutes)
 app.use('/uploads', 
     express.static(path.join(process.cwd(), 'uploads'), {
         setHeaders: (res, req) => {
-            res.set('Access-Control-Allow-Origin', 'http://localhost:5173')
+            res.set('Access-Control-Allow-Origin', 'https://resume-backend-gsv8.onrender.com')
         }
     })
 )
