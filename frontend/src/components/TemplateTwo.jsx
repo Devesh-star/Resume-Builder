@@ -1,9 +1,11 @@
-"use client";
 import React, { useEffect, useRef, useState } from "react";
-import { LuExternalLink, LuGithub } from "react-icons/lu";
 import { formatYearMonth } from "../utils/helper";
 
-const sectionTitleClass = "text-base font-bold uppercase tracking-wide mb-1 pb-1 border-b border-gray-300";
+const Title = ({ text }) => (
+  <h2 className="text-[15px] font-bold text-gray-800 uppercase tracking-widest mt-6 mb-3">
+    {text}
+  </h2>
+);
 
 const TemplateTwo = ({ resumeData = {}, containerWidth }) => {
   const {
@@ -25,217 +27,197 @@ const TemplateTwo = ({ resumeData = {}, containerWidth }) => {
   useEffect(() => {
     if (resumeRef.current && containerWidth > 0) {
       const actualWidth = resumeRef.current.offsetWidth;
-      setBaseWidth(actualWidth);
-      setScale(containerWidth / actualWidth);
+      if (actualWidth > 0) {
+        setBaseWidth(actualWidth);
+        setScale(containerWidth / actualWidth);
+      }
     }
   }, [containerWidth]);
+
+  const formatDescription = (desc) => {
+    if (!desc) return null;
+    return desc.split('\n').filter(line => line.trim().length > 0).map((line, i) => (
+      <li key={i} className="ml-5 list-disc text-sm text-gray-600 leading-relaxed mb-1.5 marker:text-gray-400">
+        {line.replace(/^-/, '').trim()}
+      </li>
+    ));
+  };
 
   return (
     <div
       ref={resumeRef}
-      className="resume-section p-4 bg-white font-sans text-black max-w-4xl mx-auto"
+      className="p-10 bg-white font-sans text-gray-800 min-h-[1056px]"
       style={{
         transform: containerWidth > 0 ? `scale(${scale})` : undefined,
         transformOrigin: "top left",
         width: containerWidth > 0 ? `${baseWidth}px` : undefined,
-        height: "1123px",
-        overflow: "hidden",
       }}
     >
-      {/* Header Section */}
-      <div className="text-center mb-2">
-        <h1 className="text-2xl font-bold tracking-tight mb-2">{profileInfo.fullName}</h1>
-        <p className="text-sm text-gray-600 font-medium mb-2">{profileInfo.designation}</p>
-        <div className="flex flex-wrap justify-center gap-1 text-[11px] text-gray-700">
+      {/* Header */}
+      <div className="border-b border-gray-200 pb-6 mb-6">
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+          {profileInfo.fullName}
+        </h1>
+        {profileInfo.designation && (
+          <p className="text-lg text-gray-600 font-medium mb-4">{profileInfo.designation}</p>
+        )}
+        
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500 font-medium">
+          {contactInfo.location && <span>{contactInfo.location}</span>}
+          
           {contactInfo.phone && <span>{contactInfo.phone}</span>}
+          
           {contactInfo.email && (
-            <a href={`mailto:${contactInfo.email}`} className="hover:underline text-blue-600">
+            <a href={`mailto:${contactInfo.email}`} className="text-blue-600 hover:underline">
               {contactInfo.email}
             </a>
           )}
+          
           {contactInfo.linkedin && (
-            <a href={contactInfo.linkedin} className="hover:underline text-blue-600">
+            <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               LinkedIn
             </a>
           )}
+          
           {contactInfo.github && (
-            <a href={contactInfo.github} className="hover:underline text-blue-600">
+            <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               GitHub
             </a>
           )}
+          
           {contactInfo.website && (
-            <a href={contactInfo.website} className="hover:underline text-blue-600">
+            <a href={contactInfo.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               Portfolio
             </a>
           )}
         </div>
       </div>
 
-      <hr className="border-gray-300 mb-2" />
-
       {/* Summary */}
       {profileInfo.summary && (
-        <section className="mb-2">
-          <h2 className={sectionTitleClass}>Summary</h2>
-          <p className="text-[11px] text-gray-800 leading-tight">{profileInfo.summary}</p>
-        </section>
+        <div className="mb-6">
+          <p className="text-sm text-gray-600 leading-relaxed">
+            {profileInfo.summary}
+          </p>
+        </div>
       )}
 
       {/* Experience */}
       {workExperience.length > 0 && (
-        <section className="mb-2">
-          <h2 className={sectionTitleClass}>Experience</h2>
-          <div className="space-y-2">
-            {workExperience.map((exp, idx) => (
-              <div key={idx} className="space-y-0.5">
-                <div className="flex justify-between items-start">
+        <div>
+          <Title text="Experience" />
+          <div className="space-y-6">
+            {workExperience.map((exp, i) => (
+              <div key={i}>
+                <div className="flex justify-between items-start mb-1">
                   <div>
-                    <h3 className="font-semibold text-[12px] pb-2 text-gray-800">{exp.role}</h3>
-                    <p className="italic text-[11px] pb-2 text-gray-600">{exp.company}</p>
+                    <h3 className="font-bold text-gray-900">{exp.role}</h3>
+                    <p className="text-sm font-medium text-gray-700">{exp.company}</p>
                   </div>
-                  <div className="text-[11px] text-right text-gray-600">
-                    <p className="italic">
-                      {formatYearMonth(exp.startDate)} - {formatYearMonth(exp.endDate)}
-                    </p>
-                    {exp.location && <p className="text-[11px]">{exp.location}</p>}
-                  </div>
+                  <span className="text-sm font-medium text-gray-500 shrink-0">
+                    {formatYearMonth(exp.startDate)} — {formatYearMonth(exp.endDate)}
+                  </span>
                 </div>
-                {exp.technologies && (
-                  <p className="bg-gray-100 text-[10px] font-mono px-1.5 py-0.5 rounded inline-block">
-                    {exp.technologies}
-                  </p>
-                )}
-                <ul className=" mt-0.5 text-[12px] text-gray-700">
-                  {exp.description?.split("\n").map((line, i) => (
-                    <li key={i} className="pb-1">{line}</li>
-                  ))}
+                <ul className="mt-2">
+                  {formatDescription(exp.description)}
                 </ul>
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       {/* Projects */}
       {projects.length > 0 && (
-        <section className="mb-2">
-          <h2 className={sectionTitleClass}>Projects</h2>
-          <div className="space-y-2">
-            {projects.map((proj, idx) => (
-              <div key={idx} className="space-y-0.5">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-semibold text-[12px] text-gray-800">{proj.title}</h3>
-                  {proj.link && (
-                    <a href={proj.link} className="text-blue-600 text-[11px] hover:underline">
-                      {proj.linkType || "Link"}
-                    </a>
-                  )}
+        <div>
+          <Title text="Projects" />
+          <div className="space-y-6">
+            {projects.map((proj, i) => (
+              <div key={i}>
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <h3 className="font-bold text-gray-900">{proj.title}</h3>
+                    <div className="flex gap-3 mt-0.5">
+                      {proj.liveDemo && (
+                        <a href={proj.liveDemo} className="text-xs font-medium text-blue-600 hover:underline">Live Demo</a>
+                      )}
+                      {proj.github && (
+                        <a href={proj.github} className="text-xs font-medium text-blue-600 hover:underline">Source Code</a>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                {proj.technologies && (
-                  <p className="bg-gray-100 pb-2 text-[10px] font-mono px-1.5 py-0.5 rounded inline-block">
-                    {proj.technologies}
-                  </p>
-                )}
-                <p className="text-[11px] pb-2 text-gray-700 ">{proj.description}</p>
-                <div className="flex gap-1 mt-0.5 pt-2 text-[11px]">
-                  {proj.github && (
-                    <a href={proj.github} className="flex items-center gap-0.5 hover:underline text-blue-600">
-                      <LuGithub size={10} /> GitHub
-                    </a>
-                  )}
-                  {proj.liveDemo && (
-                    <a href={proj.liveDemo} className="flex items-center gap-0.5 hover:underline text-blue-600">
-                      <LuExternalLink size={10} /> Demo
-                    </a>
-                  )}
-                </div>
+                <ul className="mt-2">
+                  {formatDescription(proj.description)}
+                </ul>
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       {/* Education */}
       {education.length > 0 && (
-        <section className="mb-2">
-          <h2 className={sectionTitleClass}>Education</h2>
-          <div className="space-y-1">
-            {education.map((edu, idx) => (
-              <div key={idx} className="space-y-0.25">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-[12px] pb-2 text-gray-800">{edu.degree}</h3>
-                  <p className="italic text-[11px] pb-2 text-gray-600">
-                    {formatYearMonth(edu.startDate)} - {formatYearMonth(edu.endDate)}
+        <div>
+          <Title text="Education" />
+          <div className="space-y-4">
+            {education.map((edu, i) => (
+              <div key={i} className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-gray-900">{edu.institution}</h3>
+                  <p className="text-sm text-gray-700">{edu.degree}</p>
+                </div>
+                <span className="text-sm font-medium text-gray-500 shrink-0">
+                  {formatYearMonth(edu.startDate)} — {formatYearMonth(edu.endDate)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Skills & Other Info */}
+      {(skills.length > 0 || certifications.length > 0 || languages.length > 0) && (
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {skills.length > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 mb-2">Technical Skills</h3>
+                <div className="flex flex-wrap gap-2">
+                  {skills.map((s, i) => (
+                    <span key={i} className="px-2.5 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-md">
+                      {s.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="space-y-4">
+              {certifications.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 mb-2">Certifications</h3>
+                  <ul className="space-y-1 text-sm text-gray-600">
+                    {certifications.map((c, i) => (
+                      <li key={i}>{c.title} <span className="text-gray-400">— {c.issuer}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {languages.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 mb-2">Languages</h3>
+                  <p className="text-sm text-gray-600">
+                    {languages.map(l => l.name).join(", ")}
                   </p>
                 </div>
-                <p className="italic text-[11px] text-gray-700">{edu.institution}</p>
-                {edu.courses && (
-                  <p className="text-[11px]">
-                    <strong>Courses:</strong> {edu.courses}
-                  </p>
-                )}
-              </div>
-            ))}
+              )}
+            </div>
+
           </div>
-        </section>
-      )}
-
-      {/* Skills */}
-      {skills.length > 0 && (
-        <section className="mb-2">
-          <h2 className={sectionTitleClass}>Skills</h2>
-          <ul className="text-[11px] text-gray-800 flex flex-wrap gap-1">
-            {skills.map((skill, idx) => (
-              <li key={idx} className="w-fit">{skill.name}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Certifications */}
-      {certifications.length > 0 && (
-        <section className="mb-2">
-          <h2 className={sectionTitleClass}>Certifications</h2>
-          <ul className="list-disc list-inside text-[11px] text-gray-700">
-            {certifications.map((cert, idx) => (
-              <li key={idx} className="leading-tight">
-                {cert.title} — {cert.issuer} ({cert.year})
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Languages & Interests */}
-      {(languages.length > 0 || interests.length > 0) && (
-        <section className="mb-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {languages.length > 0 && (
-              <div>
-                <h2 className={sectionTitleClass}>Languages</h2>
-                <ul className="flex flex-wrap gap-1 text-[11px] text-gray-700">
-                  {languages.map((lang, idx) => (
-                    <li key={idx} className="bg-gray-100 px-1.5 py-0.5 rounded-full">
-                      {lang.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {interests.length > 0 && interests.some(Boolean) && (
-              <div>
-                <h2 className={sectionTitleClass}>Interests</h2>
-                <ul className="flex flex-wrap gap-1 text-[11px] text-gray-700">
-                  {interests.filter(Boolean).map((int, idx) => (
-                    <li key={idx} className="bg-gray-100 px-1.5 py-0.5 rounded-full">
-                      {int}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </section>
+        </div>
       )}
     </div>
   );

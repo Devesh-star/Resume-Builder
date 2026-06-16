@@ -1,26 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { LuMail, LuPhone, LuGithub, LuGlobe } from "react-icons/lu";
-import { RiLinkedinLine } from "react-icons/ri";
-import {
-  EducationInfo,
-  WorkExperience,
-  ProjectInfo,
-  CertificationInfo,
-} from "./ResumeSection";
 import { formatYearMonth } from "../utils/helper";
 
-const DEFAULT_THEME = ["#ffffff", "#0d47a1", "#1e88e5", "#64b5f6", "#bbdefb"];
-
-const Title = ({ text, color }) => (
-  <div className="relative w-fit mb-2 resume-section-title">
-    <h2 className="relative text-base font-bold uppercase tracking-wide pb-2" style={{ color }}>
+const Title = ({ text }) => (
+  <div className="mb-2 mt-4">
+    <h2 className="text-sm font-bold uppercase tracking-widest text-black border-b-[1.5px] border-black pb-1 mb-2">
       {text}
     </h2>
-    <div className="w-full h-[2px] mt-1" style={{ backgroundColor: color }} />
   </div>
 );
 
-const TemplateOne = ({ resumeData = {}, colorPalette, containerWidth }) => {
+const TemplateOne = ({ resumeData = {}, containerWidth }) => {
   const {
     profileInfo = {},
     contactInfo = {},
@@ -40,15 +29,27 @@ const TemplateOne = ({ resumeData = {}, colorPalette, containerWidth }) => {
   useEffect(() => {
     if (resumeRef.current && containerWidth > 0) {
       const actualWidth = resumeRef.current.offsetWidth;
-      setBaseWidth(actualWidth);
-      setScale(containerWidth / actualWidth);
+      if (actualWidth > 0) {
+        setBaseWidth(actualWidth);
+        setScale(containerWidth / actualWidth);
+      }
     }
   }, [containerWidth]);
+
+  // Format bullet points from a single text block
+  const formatDescription = (desc) => {
+    if (!desc) return null;
+    return desc.split('\n').filter(line => line.trim().length > 0).map((line, i) => (
+      <li key={i} className="ml-4 list-disc text-sm text-black leading-snug mb-1">
+        {line.replace(/^-/, '').trim()}
+      </li>
+    ));
+  };
 
   return (
     <div
       ref={resumeRef}
-      className="p-6 bg-white font-sans text-gray-800"
+      className="p-8 bg-white font-serif text-black min-h-[1056px]"
       style={{
         transform: containerWidth > 0 ? `scale(${scale})` : undefined,
         transformOrigin: "top left",
@@ -56,210 +57,164 @@ const TemplateOne = ({ resumeData = {}, colorPalette, containerWidth }) => {
       }}
     >
       {/* Header */}
-      <div className="resume-section flex justify-between items-start mb-6">
-        <div>
-          <h1 className="text-3xl font-bold pb-2" >
-            {profileInfo.fullName}
-          </h1>
-          <p className="text-lg font-medium pb-2">{profileInfo.designation}</p>
-          <div className="flex flex-wrap gap-3 text-sm">
-            {contactInfo.email && (
-              <div className="flex items-center">
-                <LuMail className="mr-1" />
-                <a href={`mailto:${contactInfo.email}`} className="hover:underline">
-                  {contactInfo.email}
-                </a>
-              </div>
-            )}
-            {contactInfo.phone && (
-              <div className="flex items-center">
-                <LuPhone className="mr-1" />
-                <a href={`tel:${contactInfo.phone}`} className="hover:underline">
-                  {contactInfo.phone}
-                </a>
-              </div>
-            )}
-            {contactInfo.location && (
-              <div className="flex items-center">
-                <span>{contactInfo.location}</span>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col items-end text-sm">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold uppercase text-black tracking-wider mb-2">
+          {profileInfo.fullName}
+        </h1>
+        
+        <div className="flex flex-wrap justify-center items-center gap-2 text-sm text-black">
+          {contactInfo.location && <span>{contactInfo.location}</span>}
+          
+          {(contactInfo.location && contactInfo.phone) && <span className="mx-1">•</span>}
+          {contactInfo.phone && <span>{contactInfo.phone}</span>}
+          
+          {(contactInfo.phone && contactInfo.email) && <span className="mx-1">•</span>}
+          {contactInfo.email && (
+            <a href={`mailto:${contactInfo.email}`} className="hover:underline">
+              {contactInfo.email}
+            </a>
+          )}
+          
+          {((contactInfo.phone || contactInfo.email) && contactInfo.linkedin) && <span className="mx-1">•</span>}
           {contactInfo.linkedin && (
-            <div className="flex items-center mb-1">
-              <RiLinkedinLine className="mr-1" />
-              <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                LinkedIn
-              </a>
-            </div>
+            <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              LinkedIn
+            </a>
           )}
+          
+          {(contactInfo.linkedin && contactInfo.github) && <span className="mx-1">•</span>}
           {contactInfo.github && (
-            <div className="flex items-center mb-1">
-              <LuGithub className="mr-1" />
-              <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                GitHub
-              </a>
-            </div>
+            <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              GitHub
+            </a>
           )}
+          
+          {(contactInfo.github && contactInfo.website) && <span className="mx-1">•</span>}
           {contactInfo.website && (
-            <div className="flex items-center">
-              <LuGlobe className="mr-1" />
-              <a href={contactInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                Portfolio
-              </a>
-            </div>
+            <a href={contactInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              Portfolio
+            </a>
           )}
         </div>
       </div>
 
       {/* Professional Summary */}
       {profileInfo.summary && (
-        <div className="resume-section mb-3">
+        <div>
           <Title text="Professional Summary" />
-          <p className="text-sm leading-relaxed">{profileInfo.summary}</p>
+          <p className="text-sm leading-relaxed text-black mb-4">
+            {profileInfo.summary}
+          </p>
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-8">
-        {/* Left Column */}
-        <div className="col-span-2 space-y-4">
-          {workExperience.length > 0 && (
-            <div className="resume-section">
-              <Title text="Work Experience" />
-              <div className="space-y-6">
-                {workExperience.map((exp, i) => (
-                  <WorkExperience
-                    key={i}
-                    company={exp.company}
-                    role={exp.role}
-                    duration={`${formatYearMonth(exp.startDate)} - ${formatYearMonth(
-                      exp.endDate
-                    )}`}
-                    description={exp.description}
-                    durationColor={[2]}
-                    
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {projects.length > 0 && (
-            <div className="resume-section">
-              <Title text="Projects" />
-              <div className="space-y-4">
-                {projects.map((proj, i) => (
-                  <ProjectInfo
-                    key={i}
-                    title={proj.title}
-                    description={proj.description}
-                    githubLink={proj.github}
-                    liveDemoUrl={proj.liveDemo}
-                    bgColor={[4]}
-                    headingClass="pb-2" // Added pb-2 to subheadings
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Column */}
-        <div className="col-span-1 space-y-6">
-          {skills.length > 0 && (
-            <div className="resume-section">
-              <Title text="Skills" />
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill, i) => (
-                  <span
-                    key={i}
-                    className="text-xs font-medium px-2 py-1 rounded"
-                    style={{ backgroundColor: [4] }}
-                  >
-                    {skill.name}
+      {/* Work Experience */}
+      {workExperience.length > 0 && (
+        <div>
+          <Title text="Professional Experience" />
+          <div className="space-y-4">
+            {workExperience.map((exp, i) => (
+              <div key={i}>
+                <div className="flex justify-between items-baseline">
+                  <h3 className="font-bold text-base text-black">{exp.company}</h3>
+                  <span className="text-sm font-bold text-black">
+                    {formatYearMonth(exp.startDate)} – {formatYearMonth(exp.endDate)}
                   </span>
-                ))}
+                </div>
+                <div className="flex justify-between items-baseline mb-1">
+                  <p className="italic text-sm text-black">{exp.role}</p>
+                </div>
+                <ul className="mt-1">
+                  {formatDescription(exp.description)}
+                </ul>
               </div>
-            </div>
-          )}
-
-          {education.length > 0 && (
-            <div className="resume-section">
-              <Title text="Education" />
-              <div className="space-y-4 pb-2">
-                {education.map((edu, i) => (
-                  <EducationInfo
-                    key={i}
-                    degree={edu.degree}
-                    institution={edu.institution}
-                    duration={`${formatYearMonth(edu.startDate)} - ${formatYearMonth(
-                      edu.endDate
-                    )}`}
-                  
-                  />
-                ))}
-                <br />
-              </div>
-            </div>
-          )}
-
-          {certifications.length > 0 && (
-            <div className="resume-section">
-              <Title text="Certifications" />
-              <div className="space-y-2">
-                {certifications.map((cert, i) => (
-                  <CertificationInfo
-                    key={i}
-                    title={cert.title}
-                    issuer={cert.issuer}
-                    year={cert.year}
-                    bgColor={[4]}
-                   
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {languages.length > 0 && (
-            <div className="resume-section">
-              <Title text="Languages" />
-              <div className="flex flex-wrap gap-2">
-                {languages.map((lang, i) => (
-                  <span
-                    key={i}
-                    className="text-xs font-medium px-2 py-1 rounded"
-                    style={{ backgroundColor: [4] }}
-                  >
-                    {lang.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {interests.length > 0 && interests.some((i) => i) && (
-            <div className="resume-section">
-              <Title text="Interests" />
-              <div className="flex flex-wrap gap-2">
-                {interests.map((int, i) =>
-                  int ? (
-                    <span
-                      key={i}
-                      className="text-xs font-medium px-2 py-1 rounded"
-                      style={{ backgroundColor: [4] }}
-                    >
-                      {int}
-                    </span>
-                  ) : null
-                )}
-              </div>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Education */}
+      {education.length > 0 && (
+        <div>
+          <Title text="Education" />
+          <div className="space-y-3">
+            {education.map((edu, i) => (
+              <div key={i}>
+                <div className="flex justify-between items-baseline">
+                  <h3 className="font-bold text-base text-black">{edu.institution}</h3>
+                  <span className="text-sm font-bold text-black">
+                    {formatYearMonth(edu.startDate)} – {formatYearMonth(edu.endDate)}
+                  </span>
+                </div>
+                <p className="italic text-sm text-black">{edu.degree}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Projects */}
+      {projects.length > 0 && (
+        <div>
+          <Title text="Projects" />
+          <div className="space-y-3">
+            {projects.map((proj, i) => (
+              <div key={i}>
+                <div className="flex justify-between items-baseline mb-1">
+                  <h3 className="font-bold text-sm text-black">
+                    {proj.title}
+                    {proj.liveDemo && (
+                      <a href={proj.liveDemo} className="ml-2 text-xs font-normal underline">Live Demo</a>
+                    )}
+                    {proj.github && (
+                      <a href={proj.github} className="ml-2 text-xs font-normal underline">GitHub</a>
+                    )}
+                  </h3>
+                </div>
+                <ul className="mt-1">
+                  {formatDescription(proj.description)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Additional Section: Skills, Certifications, Languages */}
+      {(skills.length > 0 || certifications.length > 0 || languages.length > 0 || interests.length > 0) && (
+        <div>
+          <Title text="Additional Information" />
+          <div className="text-sm text-black space-y-1">
+            {skills.length > 0 && (
+              <p>
+                <span className="font-bold">Technical Skills: </span>
+                {skills.map(s => s.name).join(", ")}
+              </p>
+            )}
+            
+            {certifications.length > 0 && (
+              <p>
+                <span className="font-bold">Certifications: </span>
+                {certifications.map(c => `${c.title} (${c.issuer}${c.year ? `, ${c.year}` : ''})`).join(" • ")}
+              </p>
+            )}
+            
+            {languages.length > 0 && (
+              <p>
+                <span className="font-bold">Languages: </span>
+                {languages.map(l => l.name).join(", ")}
+              </p>
+            )}
+            
+            {interests.length > 0 && interests.some(i => i) && (
+              <p>
+                <span className="font-bold">Interests: </span>
+                {interests.filter(i => i).join(", ")}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

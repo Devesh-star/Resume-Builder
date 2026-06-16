@@ -1,39 +1,44 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { shimmerStyle } from '../assets/dummystyle'
 import { Check } from 'react-feather'
 
 const StepProgress = ({progress}) => {
+  const [particles, setParticles] = useState([]);
+  
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setParticles([...Array(12)].map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 2}s`
+    })));
+  }, []);
+
   return (
     <>
       <style>{shimmerStyle}</style>
-      <div className='relative w-full h-4 bg-slate-800/50 backdrop-blur-2xl overflow-hidden rounded-full border border-slate-700/30'>
-        <div className='absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 animate-pulse'/>
+      <div className='relative w-full h-4 bg-cyber-elevated overflow-hidden rounded-full border border-stone-200'>
+        <div className='absolute inset-0 bg-gradient-to-r from-neon-pink/10 to-neon-cyan/10 animate-pulse'/>
 
-        <div className='relative h-full bg-gradient-to-r from-cyan-500 via-violet-500 to-cyan-600 
+        <div className='relative h-full bg-gradient-to-r from-neon-pink via-neon-cyan to-neon-pink 
         animate-flow bg-[length:200%_100%] transition-all duration-700 ease-out rounded-full overflow-hidden
         animate-pulse-glow' style={{width: `${progress}%`}}>
-            <div className='absolue inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer'/>
+            <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer'/>
             <div className='absolute inset-0 opacity-80'>
                 {[...Array(8)].map((_,i) => (
-                    <div key={i} className='absolut top-1/2 w-2 h-2 bg-white rounded-full animate-bubble shadow-lg'
+                    <div key={i} className='absolute top-1/2 w-2 h-2 bg-white rounded-full animate-bubble shadow-lg'
                         style={{
                             left: `${(i+1) * 12}%`,
-                            animationDelay: `${1 * 0.25}s`,
+                            animationDelay: `${i * 0.25}s`,
 
                         }}>
                     </div>
                 ))}
             </div>
 
-            <div className='absolut einset-0'>
-                {[...Array(12)].map((_,i) => (
-                    <div key={i} className='absolute w-1 h-1 bg-white rounded-full'
-                    style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                        animationDelay: `${Math.random() * 2}s`
-                    }}>
-
+            <div className='absolute inset-0'>
+                {particles.map((style, i) => (
+                    <div key={i} className='absolute w-1 h-1 bg-white rounded-full' style={style}>
                     </div>
                 ))}
             </div>
@@ -46,7 +51,7 @@ const StepProgress = ({progress}) => {
       </div>
 
       <div className='flex justify-between items-center mt-3'>
-        <div className='text-xs font-bold text-slate-500'>
+        <div className='text-xs font-bold text-stone-500'>
             {progress < 25 
             ? "Getting Started"
             : progress < 50 
@@ -69,4 +74,3 @@ const StepProgress = ({progress}) => {
 }
 
 export default StepProgress
-{}

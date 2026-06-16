@@ -15,18 +15,12 @@ import {
   workExperienceStyles
 } from "../assets/dummystyle";
 
-// AdditionalInfoForm Component
-export const AdditionalInfoForm = ({ languages, interests, updateArrayItem, addArrayItem, removeArrayItem }) => {
+// LanguagesForm Component
+export const LanguagesForm = ({ languages, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
     <div className={additionalInfoStyles.container}>
-      <h2 className={additionalInfoStyles.heading}>Additional Information</h2>
-
-      {/* Languages Section */}
-      <div className="mb-10">
-        <h3 className={additionalInfoStyles.sectionHeading}>
-          <div className={additionalInfoStyles.dotViolet}></div>
-          Languages
-        </h3>
+      <h2 className={additionalInfoStyles.heading}>Languages</h2>
+      <div className="mb-6">
         <div className="space-y-6">
           {languages?.map((lang, index) => (
             <div key={index} className={additionalInfoStyles.languageItem}>
@@ -69,13 +63,16 @@ export const AdditionalInfoForm = ({ languages, interests, updateArrayItem, addA
           </button>
         </div>
       </div>
+    </div>
+  );
+};
 
-      {/* Interests Section */}
+// InterestsForm Component
+export const InterestsForm = ({ interests, updateArrayItem, addArrayItem, removeArrayItem }) => {
+  return (
+    <div className={additionalInfoStyles.container}>
+      <h2 className={additionalInfoStyles.heading}>Interests</h2>
       <div className="mb-6">
-        <h3 className={additionalInfoStyles.sectionHeading}>
-          <div className={additionalInfoStyles.dotOrange}></div>
-          Interests
-        </h3>
         <div className="space-y-4">
           {interests?.map((interest, index) => (
             <div key={index} className={additionalInfoStyles.interestItem}>
@@ -548,6 +545,88 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
         >
           <Plus size={16} />
           Add Work Experience
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// CustomSectionForm Component
+export const CustomSectionForm = ({ customSection, updateSection, updateArrayItem, addArrayItem, removeArrayItem }) => {
+  return (
+    <div className={workExperienceStyles.container}>
+      <div className="flex items-center gap-4 mb-8">
+        <Inputs
+          placeholder="Section Title (e.g. Awards)"
+          value={customSection.title || ""}
+          onChange={({ target }) => updateSection("title", target.value)}
+        />
+      </div>
+      <div className="space-y-6 mb-6">
+        {customSection.items?.map((item, index) => (
+          <div key={index} className={workExperienceStyles.item}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Inputs
+                label="Item Title"
+                placeholder="e.g. Best Developer Award"
+                value={item.title || ""}
+                onChange={({ target }) => updateArrayItem(index, "title", target.value)}
+              />
+
+              <Inputs
+                label="Subtitle"
+                placeholder="e.g. Hackathon 2023"
+                value={item.subtitle || ""}
+                onChange={({ target }) => updateArrayItem(index, "subtitle", target.value)}
+              />
+
+              <div className="md:col-span-2">
+                <Inputs
+                  label="Date / Duration"
+                  placeholder="e.g. Oct 2023"
+                  value={item.date || ""}
+                  onChange={({ target }) => updateArrayItem(index, "date", target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <label className="block text-sm font-bold text-slate-300 mb-3">Description</label>
+              <textarea
+                placeholder="Short description..."
+                className={workExperienceStyles.textarea}
+                rows={3}
+                value={item.description || ""}
+                onChange={({ target }) => updateArrayItem(index, "description", target.value)}
+              />
+            </div>
+
+            {customSection.items.length > 1 && (
+              <button
+                type="button"
+                className={commonStyles.trashButton}
+                onClick={() => removeArrayItem(index)}
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </div>
+        ))}
+
+        <button
+          type="button"
+          className={`${commonStyles.addButtonBase} bg-gradient-to-r from-neon-pink to-neon-cyan`}
+          onClick={() =>
+            addArrayItem({
+              title: "",
+              subtitle: "",
+              date: "",
+              description: "",
+            })
+          }
+        >
+          <Plus size={16} />
+          Add Item
         </button>
       </div>
     </div>

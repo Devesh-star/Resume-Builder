@@ -28,8 +28,14 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response) {
       const status = error.response.status;
+      const requestUrl = error.config?.url || '';
 
-      if (status === 401 || status === 403) {
+      // Don't redirect on auth endpoints - let the login/signup forms handle their own errors
+      const isAuthEndpoint = requestUrl.includes('/auth/login') || 
+                             requestUrl.includes('/auth/register') || 
+                             requestUrl.includes('/auth/google-login');
+
+      if ((status === 401 || status === 403) && !isAuthEndpoint) {
         localStorage.removeItem('token');
         window.location.href = '/';
       } else if (status === 500) {

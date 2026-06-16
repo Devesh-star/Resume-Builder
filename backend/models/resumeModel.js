@@ -15,7 +15,33 @@ const ResumeSchema = new mongoose.Schema({
     },
     template: {
         theme: String,
-        colorPalette: [String]
+        colorPalette: [String],
+        isCustom: { type: Boolean, default: false },
+        customConfig: {
+            layout: {
+                type: String,
+                enum: ['single', 'two-column-left', 'two-column-right'],
+                default: 'two-column-left'
+            },
+            visibleSections: {
+                summary: { type: Boolean, default: true },
+                workExperience: { type: Boolean, default: true },
+                education: { type: Boolean, default: true },
+                skills: { type: Boolean, default: true },
+                projects: { type: Boolean, default: true },
+                certifications: { type: Boolean, default: true },
+                languages: { type: Boolean, default: true },
+                interests: { type: Boolean, default: true },
+            },
+            sectionOrder: [String],
+            accentColor: { type: String, default: '#00f0ff' },
+            fontFamily: { type: String, default: 'Inter' },
+            headerStyle: {
+                type: String,
+                enum: ['centered', 'left-aligned', 'split'],
+                default: 'left-aligned'
+            },
+        }
     },
     profileInfo: {
         profilePreviewUrl: String,
@@ -76,6 +102,20 @@ const ResumeSchema = new mongoose.Schema({
         },
     ],
     interests: [String],
+    customSections: [
+        {
+            id: String,
+            title: String,
+            items: [
+                {
+                    title: String,
+                    subtitle: String,
+                    date: String,
+                    description: String,
+                }
+            ]
+        }
+    ],
 },
 {
     timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt'}

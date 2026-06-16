@@ -2,11 +2,17 @@ import React from 'react'
 import TemplateOne from './TemplateOne'
 import TemplateTwo from './TemplateTwo'
 import TemplateThree from './TemplateThree'
+import TemplateFour from './TemplateFour'
+import TemplateFive from './TemplateFive'
+import TemplateSix from './TemplateSix'
+import TemplateSeven from './TemplateSeven'
+import CustomTemplate from './CustomTemplate'
 
 const RenderResume = ({
     templateId,
     resumeData,
     containerWidth,
+    customConfig,
 }) => {
   switch (templateId) {
     case '01':
@@ -22,6 +28,31 @@ const RenderResume = ({
         case '03':
             return (
                 <TemplateThree resumeData={resumeData} containerWidth={containerWidth}/>
+            )
+
+        case '04':
+            return (
+                <TemplateFour resumeData={resumeData} containerWidth={containerWidth}/>
+            )
+
+        case '05':
+            return (
+                <TemplateFive resumeData={resumeData} containerWidth={containerWidth}/>
+            )
+
+        case '06':
+            return (
+                <TemplateSix resumeData={resumeData} containerWidth={containerWidth}/>
+            )
+
+        case '07':
+            return (
+                <TemplateSeven resumeData={resumeData} containerWidth={containerWidth}/>
+            )
+
+        case 'custom':
+            return (
+                <CustomTemplate resumeData={resumeData} customConfig={customConfig} containerWidth={containerWidth}/>
             )
 
             default:

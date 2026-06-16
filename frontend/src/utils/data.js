@@ -1,22 +1,51 @@
 import Resume1 from "../assets/Resume1.png"
-import Resume2 from "../assets/Resume2.png"
+import Resume2 from "../assets/Resume2.jpg"
 import Resume3 from "../assets/Resume3.png"
+import Resume4 from "../assets/Resume4.jpg"
+import Resume5 from "../assets/Resume5.webp"
 
 export const resumeTemplates = [
     {
         id: "01",
         thumbnailImg: Resume1,
-        colorPaletteCode: "themeOne"
+        colorPaletteCode: "themeOne",
+        title: "Classic"
     },
     {
         id: "02",
         thumbnailImg: Resume2,
-        colorPaletteCode: "themeTwo"
+        colorPaletteCode: "themeTwo",
+        title: "Professional"
     },
     {
         id: "03",
         thumbnailImg: Resume3,
-        colorPaletteCode: "themeThree"
+        colorPaletteCode: "themeThree",
+        title: "Elegant"
+    },
+    {
+        id: "04",
+        thumbnailImg: Resume4,
+        colorPaletteCode: "themeFour",
+        title: "Modern Tech"
+    },
+    {
+        id: "05",
+        thumbnailImg: Resume5,
+        colorPaletteCode: "themeFive",
+        title: "Creative"
+    },
+    {
+        id: "06",
+        thumbnailImg: Resume3,
+        colorPaletteCode: "themeSix",
+        title: "Minimalist"
+    },
+    {
+        id: "07",
+        thumbnailImg: Resume5,
+        colorPaletteCode: "themeSeven",
+        title: "Executive"
     },
 ]
 
@@ -127,5 +156,25 @@ export const DUMMY_RESUME_DATA = {
         "Blockchain Technology",
         "Hiking",
         "Photography"
+    ],
+    customSections: [
+        {
+            id: "custom-awards",
+            title: "Awards & Achievements",
+            items: [
+                {
+                    title: "Employee of the Year",
+                    subtitle: "TechSolutions Inc.",
+                    date: "2022",
+                    description: "Awarded for exceptional performance and delivering the SaaS platform ahead of schedule.",
+                },
+                {
+                    title: "First Place - Global Hackathon",
+                    subtitle: "InnovateX",
+                    date: "2021",
+                    description: "Led a team of 4 to build an AI-powered accessibility tool.",
+                }
+            ]
+        }
     ]
 };

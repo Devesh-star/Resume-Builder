@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
 import { authStyles as styles } from "../assets/dummystyle";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { motion } from "framer-motion";
 import { validateEmail } from "../utils/helper";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
@@ -58,10 +61,38 @@ const SignUp = ({ setCurrentPage }) => {
     }
   };
 
+  const handleGoogleSignUp = async (credentialResponse) => {
+    try {
+      setError(null);
+      const response = await axiosInstance.post(
+        API_PATHS.AUTH.GOOGLE_LOGIN,
+        { credential: credentialResponse.credential }
+      );
+
+      const { token } = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(response.data);
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Google sign-up failed. Please try again."
+      );
+    }
+  };
+
   return (
-    <div className={styles.signupContainer}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+      className={styles.signupContainer}
+    >
       <div className={styles.headerWrapper}>
-        <h3 className={styles.signupTitle}>Create Account</h3>
+        <h3 className={styles.signupTitle}>Join CV Pilot</h3>
         <p className={styles.signupSubtitle}>
           Join thousands of professionals today
         </p>
@@ -98,6 +129,22 @@ const SignUp = ({ setCurrentPage }) => {
           Create Account
         </button>
 
+        <div className="auth-divider">
+          <span>or</span>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSignUp}
+            onError={() => setError("Google sign-up failed")}
+            theme="filled_black"
+            size="large"
+            shape="pill"
+            text="signup_with"
+            width="100%"
+          />
+        </div>
+
         <p className={styles.switchText}>
           Already have an account?{" "}
           <button
@@ -109,7 +156,7 @@ const SignUp = ({ setCurrentPage }) => {
           </button>
         </p>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

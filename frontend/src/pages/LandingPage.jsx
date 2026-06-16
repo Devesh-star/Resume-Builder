@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { landingPageStyles } from "../assets/dummystyle";
-import { ArrowRight, LayoutTemplate, Menu, X, Zap, Download } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, LayoutTemplate, Menu, X, Zap, Download, FileText, Sparkles, Shield } from "lucide-react";
 import { useContext } from "react";
 import { UserContext } from "../components/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -8,306 +9,285 @@ import { ProfileInfoCard } from "../components/Cards";
 import Modal from "../components/Modal";
 import Login from "../components/Login";
 import SignUp from "../components/SignUp";
+import PageTransition from "../components/PageTransition";
+import HeroShowcase from "../components/HeroShowcase";
+
+import Resume1 from "../assets/Resume1.png";
+import Resume3 from "../assets/Resume3.png";
 
 const LandingPage = () => {
   const { user } = useContext(UserContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
   const [openAuthModal, setopenAuthModal] = useState(false);
-  const [currentPage, setcurrentPage] = useState("login")
+  const [currentPage, setcurrentPage] = useState("login");
 
   const handleCTA = () => {
     if (!user) {
-      setopenAuthModal(true)
+      setopenAuthModal(true);
+    } else {
+      navigate("/dashboard");
     }
-    else {
-      navigate('/dashboard')
-    }
-  }
+  };
 
   return (
-    <div className={landingPageStyles.container}>
-      <header className={landingPageStyles.header}>
-        <div className={landingPageStyles.headerContainer}>
-          <div className={landingPageStyles.logoContainer}>
-            <div className={landingPageStyles.logoIcon}>
-              <LayoutTemplate className={landingPageStyles.logoIconInner} />
+    <PageTransition>
+      <div className="min-h-screen text-stone-200 font-sans">
+        {/* Header */}
+        <header className="fixed top-0 w-full z-50 bg-[#0a0508]/90 backdrop-blur-xl border-b border-white/5">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-[#d8386b] rounded-lg flex items-center justify-center">
+                <FileText size={18} className="text-white" />
+              </div>
+              <span className="text-xl font-bold text-white tracking-tight">
+                CV<span className="text-[#d8386b]">Pilot</span>
+              </span>
             </div>
-            <span className={landingPageStyles.logoText}>ResumeXpert</span>
-          </div>
 
-          <button
-            className={landingPageStyles.mobileMenuButton}
-            onClick={() => setmobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X size={24} className={landingPageStyles.mobileMenuIcon} />
-            ) : (
-              <Menu size={24} className={landingPageStyles.mobileMenuIcon} />
-            )}
-          </button>
-          <div className="hidden md:flex items-center">{user ? (
-            <ProfileInfoCard />
-          ) : (
-            <button className={landingPageStyles.desktopAuthButton} onClick={() => setopenAuthModal(true)}>
-              <div className={landingPageStyles.desktopAuthButtonOverlay}></div>
-              <span className={landingPageStyles.desktopAuthButtonText}>Get Started</span>
-            </button>
-          )}
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className={landingPageStyles.mobileMenu}>
-            <div className={landingPageStyles.mobileMenuContainer}>
-              {user ? (
-                <div className={landingPageStyles.mobileUserInfo}>
-                  <div className={landingPageStyles.mobileUserWelcome}>
-                    Welcome Back
-                  </div>
-                  <button className={landingPageStyles.mobileDashboardButton}
-                    onClick={() => {
-                      navigate('/dashboard');
-                      setmobileMenuOpen(false);
-                    }}>
-                    Go to Dashboard
-                  </button>
-                </div>
+            <button
+              className="md:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
+              onClick={() => setmobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X size={22} className="text-stone-300" />
               ) : (
-                <button className={landingPageStyles.mobileAuthButton}
-                  onClick={() => {
-                    setopenAuthModal(true)
-                    setmobileMenuOpen(false)
-                  }}>
+                <Menu size={22} className="text-stone-300" />
+              )}
+            </button>
+
+            <div className="hidden md:flex items-center gap-5">
+              {!user && (
+                <button
+                  className="text-sm font-medium text-stone-400 hover:text-white transition-colors"
+                  onClick={() => setopenAuthModal(true)}
+                >
+                  Login
+                </button>
+              )}
+              {user ? (
+                <ProfileInfoCard />
+              ) : (
+                <button
+                  className="bg-[#d8386b] hover:bg-[#c02e5c] text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors"
+                  onClick={() => setopenAuthModal(true)}
+                >
                   Get Started
                 </button>
               )}
             </div>
           </div>
-        )}
-      </header>
 
-      <main className={landingPageStyles.main}>
-        <section className={landingPageStyles.heroSection}>
-          <div className={landingPageStyles.heroGrid}>
-            <div className={landingPageStyles.heroLeft}>
-              <div className={landingPageStyles.tagline}>
-                Professional Resume Builder
-              </div>
+          {mobileMenuOpen && (
+            <div className="md:hidden bg-[#0a0508]/95 backdrop-blur-xl border-b border-white/5 px-4 py-4">
+              {user ? (
+                <button
+                  className="w-full bg-[#d8386b] text-white py-3 rounded-lg font-semibold"
+                  onClick={() => {
+                    navigate("/dashboard");
+                    setmobileMenuOpen(false);
+                  }}
+                >
+                  Go to Dashboard
+                </button>
+              ) : (
+                <button
+                  className="w-full bg-[#d8386b] text-white py-3 rounded-lg font-semibold"
+                  onClick={() => {
+                    setopenAuthModal(true);
+                    setmobileMenuOpen(false);
+                  }}
+                >
+                  Get Started
+                </button>
+              )}
+            </div>
+          )}
+        </header>
 
-              <h1 className={landingPageStyles.heading}>
-                <span className={landingPageStyles.headingText}>Craft</span>
-                <span className={landingPageStyles.headingGradient}>Professional</span>
-                <span className={landingPageStyles.headingText}>Resumes</span>
-              </h1>
-
-              <p className={landingPageStyles.description}>
-                Create job-winning resumes with expertly designed templates, ATS-friendly, recruiter-approved, and tailored to you career goals.
-              </p>
-
-              <div className={landingPageStyles.ctaButtons}>
-                <button className={landingPageStyles.primaryButton}
-                  onClick={handleCTA}>
-                  <div className={landingPageStyles.primaryButtonOverlay}>
-                  </div>
-                  <span className={landingPageStyles.primaryButtonContent}>
-                    Start Building
-                    <ArrowRight className={landingPageStyles.primaryButtonIcon} size={18} />
+        {/* Hero */}
+        <main className="relative z-10 pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+          <section className="min-h-[calc(100vh-200px)] flex flex-col justify-center mb-20">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left */}
+              <div className="flex flex-col items-start text-left">
+                <div className="inline-flex items-center gap-2 bg-[#d8386b]/10 border border-[#d8386b]/20 px-3 py-1.5 rounded-full mb-6">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#d8386b]"></div>
+                  <span className="text-xs font-semibold tracking-wide text-[#d8386b] uppercase">
+                    Professional Resume Builder
                   </span>
-                </button>
+                </div>
 
-                <button className={landingPageStyles.secondaryButton} onClick={handleCTA}>
-                  View Templates
-                </button>
-              </div>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+                  Build a Resume{" "}
+                  <br />
+                  <span className="text-[#d8386b]">
+                    That Gets You Hired
+                  </span>
+                </h1>
 
-              <div className={landingPageStyles.statsContainer}>
-                {[
-                  { value: '50K+', label: 'Resumes Created', gradient: 'from-cyan-400 to-violet-500' },
-                  { value: '4.9★', label: 'User Rating', gradient: 'from-amber-400 to-orange-500' },
-                  { value: '5 Min', label: 'Build Time', gradient: 'from-emerald-400 to-teal-500' }
-                ].map((stat, idx) => {
-                  return (
-                    <div className={landingPageStyles.statItem} key={idx}>
-                      <div className={`${landingPageStyles.statNumber} ${stat.gradient}`}>
-                        {stat.value}
-                      </div>
-                      <div className={landingPageStyles.statLabel}>
-                        {stat.label}
-                      </div>
-                    </div>
-                  );
-                })}
+                <p className="text-base sm:text-lg text-stone-400 leading-relaxed mb-8 max-w-lg">
+                  Create professional, ATS-friendly resumes with beautiful
+                  templates. Stand out from the competition and land more
+                  interviews.
+                </p>
 
-              </div>
-            </div>
+                <div className="flex flex-wrap items-center gap-3 mb-10">
+                  <button
+                    className="bg-[#d8386b] hover:bg-[#c02e5c] text-white px-7 py-3 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
+                    onClick={handleCTA}
+                  >
+                    Start Building Free
+                    <ArrowRight size={16} />
+                  </button>
+                  <button
+                    className="border border-white/15 hover:border-white/30 text-stone-300 hover:text-white px-7 py-3 rounded-lg text-sm font-semibold transition-colors"
+                    onClick={handleCTA}
+                  >
+                    See Templates
+                  </button>
+                </div>
 
-            {/* Right Content - SVG Illustration */}
-            <div className={landingPageStyles.heroIllustration}>
-              <div className={landingPageStyles.heroIllustrationBg}></div>
-              <div className={landingPageStyles.heroIllustrationContainer}>
-                <svg
-                  viewBox="0 0 400 500"
-                  className={landingPageStyles.svgContainer}
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {/* Background */}
-                  <defs>
-                    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#06b6d4" />
-                      <stop offset="100%" stopColor="#8b5cf6" />
-                    </linearGradient>
-                    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#1e293b" />
-                      <stop offset="100%" stopColor="#0f172a" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* SVG elements */}
-                  <rect x="50" y="50" width="300" height="400" rx="20" className={landingPageStyles.svgRect} />
-                  <circle cx="120" cy="120" r="25" className={landingPageStyles.svgCircle} />
-                  <rect x="160" y="105" width="120" height="8" rx="4" className={landingPageStyles.svgRectPrimary} />
-                  <rect x="160" y="120" width="80" height="6" rx="3" className={landingPageStyles.svgRectSecondary} />
-                  <rect x="70" y="170" width="260" height="4" rx="2" className={landingPageStyles.svgRectLight} />
-                  <rect x="70" y="185" width="200" height="4" rx="2" className={landingPageStyles.svgRectLight} />
-                  <rect x="70" y="200" width="240" height="4" rx="2" className={landingPageStyles.svgRectLight} />
-                  <rect x="70" y="230" width="60" height="6" rx="3" className={landingPageStyles.svgRectPrimary} />
-                  <rect x="70" y="250" width="40" height="15" rx="7" className={landingPageStyles.svgRectSkill} />
-                  <rect x="120" y="250" width="50" height="15" rx="7" className={landingPageStyles.svgRectSkill} />
-                  <rect x="180" y="250" width="45" height="15" rx="7" className={landingPageStyles.svgRectSkill} />
-                  <rect x="70" y="290" width="80" height="6" rx="3" className={landingPageStyles.svgRectSecondary} />
-                  <rect x="70" y="310" width="180" height="4" rx="2" className={landingPageStyles.svgRectLight} />
-                  <rect x="70" y="325" width="150" height="4" rx="2" className={landingPageStyles.svgRectLight} />
-                  <rect x="70" y="340" width="200" height="4" rx="2" className={landingPageStyles.svgRectLight} />
-
-                  {/* Animated elements */}
-                  <circle cx="320" cy="100" r="15" className={landingPageStyles.svgAnimatedCircle}>
-                    <animateTransform
-                      attributeName="transform"
-                      type="translate"
-                      values="0,0; 0,-10; 0,0"
-                      dur="3s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <rect x="30" y="300" width="12" height="12" rx="6" className={landingPageStyles.svgAnimatedRect}>
-                    <animateTransform
-                      attributeName="transform"
-                      type="translate"
-                      values="0,0; 5,0; 0,0"
-                      dur="2s"
-                      repeatCount="indefinite"
-                    />
-                  </rect>
-                  <polygon points="360,200 370,220 350,220" className={landingPageStyles.svgAnimatedPolygon}>
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      values="0 360 210; 360 360 210; 0 360 210"
-                      dur="4s"
-                      repeatCount="indefinite"
-                    />
-                  </polygon>
-                </svg>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <section className={landingPageStyles.featuresSection}>
-          <div className={landingPageStyles.featuresContainer}>
-            <div className={landingPageStyles.featuresHeader}>
-              <h2 className={landingPageStyles.featuresTitle}>
-                Why Choose <span className={landingPageStyles.featuresTitleGradient}>ResumeXpert?</span>
-              </h2>
-              <p className={landingPageStyles.featuresDescription}>Everything you need to create a professional resume that stands out</p>
-            </div>
-
-            <div className={landingPageStyles.featuresGrid}>
-              {[
-                {
-                  icon: <Zap className={landingPageStyles.featureIcon} />,
-                  title: "Lightning Fast",
-                  description: "Create professional resumes in under 5 minutes with our streamlined process",
-                  gradient: landingPageStyles.featureIconViolet,
-                  bg: landingPageStyles.featureCardViolet
-                },
-                {
-                  icon: <LayoutTemplate className={landingPageStyles.featureIcon} />,
-                  title: "Pro Templates",
-                  description: "Choose from dozens of recruiter-approved, industry-specific templates",
-                  gradient: landingPageStyles.featureIconFuchsia,
-                  bg: landingPageStyles.featureCardFuchsia
-                },
-                {
-                  icon: <Download className={landingPageStyles.featureIcon} />,
-                  title: "Instant Export",
-                  description: "Download high-quality PDFs instantly with perfect formatting",
-                  gradient: landingPageStyles.featureIconOrange,
-                  bg: landingPageStyles.featureCardOrange
-                }
-              ].map((feature, index) => (
-                <div
-                  key={index}
-                  className={`${landingPageStyles.featureCard} ${feature.bg}`}
-                >
-                  <div className={landingPageStyles.featureCardHover}></div>
-
-                  <div className={landingPageStyles.featureCardContent}>
-                    <div className={`${landingPageStyles.featureIconContainer} ${feature.gradient}`}>
-                      {feature.icon}
-                    </div>
-
-                    <h3 className={landingPageStyles.featureTitle}>
-                      {feature.title}
-                    </h3>
-
-                    <p className={landingPageStyles.featureDescription}>
-                      {feature.description}
-                    </p>
+                <div className="flex items-center gap-6 text-sm text-stone-500">
+                  <div className="flex items-center gap-1.5">
+                    <Shield size={14} className="text-stone-500" />
+                    <span>Free to use</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Download size={14} className="text-stone-500" />
+                    <span>PDF Export</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-stone-500" />
+                    <span>5+ Templates</span>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Right — Animated Hero Showcase */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="hidden lg:flex justify-center items-center"
+              >
+                <HeroShowcase />
+              </motion.div>
             </div>
+          </section>
 
-          </div>
-        </section>
-
-        <section className={landingPageStyles.ctaSection}>
-              <div className={landingPageStyles.ctaContainer}>
-                <div className={landingPageStyles.ctaCard}>
-                  <div className={landingPageStyles.ctaCardBg}></div>
-                    <div className={landingPageStyles.ctaCardContent}>
-                      <h2 className={landingPageStyles.ctaTitle}>Ready to Build Your <span className={landingPageStyles.ctaTitleGradient}>Standout Resume?</span></h2>
-                      <p className={landingPageStyles.ctaDescription}>Join thousands of professionals who landed their jobs with our platform</p>
-                      <button className={landingPageStyles.ctaButton} onClick={handleCTA}>
-                        <div className={landingPageStyles.ctaButtonOverlay}></div>
-                        <span className={landingPageStyles.ctaButtonText}>Start Building Now</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-        </section>
-      </main>
-
-      <footer className={landingPageStyles.footer}>
-              <div className={landingPageStyles.footerContainer}>
-                <p className={landingPageStyles.footerText}>
-                  Crafted with <span className={landingPageStyles.footerHeart}>❤️</span> by Devesh Malik
+          {/* Features */}
+          <section className="py-16 border-t border-white/5">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-14">
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                  Why Choose <span className="text-[#d8386b]">CVPilot?</span>
+                </h2>
+                <p className="text-stone-400 text-base max-w-xl mx-auto">
+                  Everything you need to create a professional resume that stands out
                 </p>
               </div>
-      </footer>
 
-      <Modal isOpen = {openAuthModal} onClose={() => {
-        setopenAuthModal(false)
-        setcurrentPage("login")
-      }} hideHeader>
-        <div>
-          {currentPage === 'login' && <Login setCurrentPage={setcurrentPage}/>}
-          {currentPage === 'signup' && <SignUp setCurrentPage={setcurrentPage}/>}
-        </div>
-      </Modal>
-    </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: <Zap size={22} className="text-[#d8386b]" />,
+                    title: "Lightning Fast",
+                    description:
+                      "Create professional resumes in under 5 minutes with our streamlined editor",
+                  },
+                  {
+                    icon: <LayoutTemplate size={22} className="text-[#d8386b]" />,
+                    title: "Pro Templates",
+                    description:
+                      "Choose from multiple recruiter-approved, ATS-friendly templates",
+                  },
+                  {
+                    icon: <Download size={22} className="text-[#d8386b]" />,
+                    title: "Instant Export",
+                    description:
+                      "Download high-quality PDFs instantly with perfect formatting",
+                  },
+                ].map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="bg-white/[0.03] border border-white/[0.06] p-7 rounded-xl hover:bg-white/[0.05] transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-[#d8386b]/10 flex items-center justify-center mb-5">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-stone-400 text-sm leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* CTA */}
+          <section className="py-16">
+            <div className="max-w-3xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-white/[0.03] border border-white/[0.06] p-10 sm:p-14 rounded-2xl text-center"
+              >
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+                  Ready to Build Your{" "}
+                  <span className="text-[#d8386b]">Resume?</span>
+                </h2>
+                <p className="text-stone-400 text-base mb-8 max-w-lg mx-auto">
+                  Join professionals who landed their dream jobs with CVPilot
+                </p>
+                <button
+                  className="bg-[#d8386b] hover:bg-[#c02e5c] text-white px-8 py-3.5 rounded-lg text-base font-semibold transition-colors"
+                  onClick={handleCTA}
+                >
+                  Start Building Now
+                </button>
+              </motion.div>
+            </div>
+          </section>
+        </main>
+
+        {/* Footer */}
+        <footer className="w-full text-center py-6 border-t border-white/5">
+          <p className="text-stone-500 text-sm">
+            Crafted with <span className="text-[#d8386b]">♥</span> by Devesh Malik
+          </p>
+        </footer>
+
+        {/* Auth Modal */}
+        <Modal
+          isOpen={openAuthModal}
+          onClose={() => {
+            setopenAuthModal(false);
+            setcurrentPage("login");
+          }}
+          hideHeader
+          maxWidth="max-w-[400px]"
+        >
+          <div>
+            {currentPage === "login" && (
+              <Login setCurrentPage={setcurrentPage} />
+            )}
+            {currentPage === "signup" && (
+              <SignUp setCurrentPage={setcurrentPage} />
+            )}
+          </div>
+        </Modal>
+      </div>
+    </PageTransition>
   );
 };
 

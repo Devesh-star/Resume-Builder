@@ -19,7 +19,9 @@ import {
   SkillsInfoForm,
   ProjectDetailForm,
   CertificationInfoForm,
-  AdditionalInfoForm
+  LanguagesForm,
+  InterestsForm,
+  CustomSectionForm
 } from './Forms'
 import { Save } from 'react-feather'
 import RenderResume from './RenderResume'
@@ -27,6 +29,8 @@ import ThemeSelector from './ThemeSelector'
 import Modal from './Modal'
 import html2canvas from "html2canvas"
 import { dataURLtoFile } from '../utils/helper'
+import { DUMMY_RESUME_DATA } from '../utils/data'
+import PageTransition from './PageTransition'
 
 const useResizeObserver = () => {
   const [size, setsize] = useState({ width: 0, height: 0 })
@@ -207,227 +211,192 @@ const EditResume = () => {
     calculateCompletion();
   }, [resumeData]);
 
-  // Validate Inputs
-  const validateAndNext = (e) => {
-    const errors = []
+  const mergeWithDummyData = (data) => {
+    const isFieldEmpty = (val) => {
+      if (!val) return true;
+      if (Array.isArray(val)) {
+        if (val.length === 0) return true;
+        // Check if all items in array are practically empty objects
+        const allEmptyObjects = val.every(item => item && typeof item === 'object' && Object.values(item).every(v => !v || (typeof v === 'string' && v.trim() === '')));
+        return allEmptyObjects;
+      }
+      if (typeof val === 'string') return val.trim() === '';
+      return false;
+    };
 
-    switch (currentPage) {
-      case "profile-info":
-        const { fullName, designation, summary } = resumeData.profileInfo
-        if (!fullName.trim()) errors.push("Full Name is required")
-        if (!designation.trim()) errors.push("Designation is required")
-        if (!summary.trim()) errors.push("Summary is required")
-        break
-
-      case "contact-info":
-        const { email, phone } = resumeData.contactInfo
-        if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) errors.push("Valid email is required.")
-        if (!phone.trim() || !/^\d{10}$/.test(phone)) errors.push("Valid 10-digit phone number is required")
-        break
-
-      case "work-experience":
-        resumeData.workExperience.forEach(({ company, role, startDate, endDate }, index) => {
-          if (!company || !company.trim()) errors.push(`Company is required in experience ${index + 1}`)
-          if (!role || !role.trim()) errors.push(`Role is required in experience ${index + 1}`)
-          if (!startDate || !endDate) errors.push(`Start and End dates are required in experience ${index + 1}`)
-        })
-        break
-
-      case "education-info":
-        resumeData.education.forEach(({ degree, institution, startDate, endDate }, index) => {
-          if (!degree.trim()) errors.push(`Degree is required in education ${index + 1}`)
-          if (!institution.trim()) errors.push(`Institution is required in education ${index + 1}`)
-          if (!startDate || !endDate) errors.push(`Start and End dates are required in education ${index + 1}`)
-        })
-        break
-
-      case "skills":
-        resumeData.skills.forEach(({ name, progress }, index) => {
-          if (!name.trim()) errors.push(`Skill name is required in skill ${index + 1}`)
-          if (progress < 1 || progress > 100)
-            errors.push(`Skill progress must be between 1 and 100 in skill ${index + 1}`)
-        })
-        break
-
-      case "projects":
-        resumeData.projects.forEach(({ title, description }, index) => {
-          if (!title.trim()) errors.push(`Project Title is required in project ${index + 1}`)
-          if (!description.trim()) errors.push(`Project description is required in project ${index + 1}`)
-        })
-        break
-
-      case "certifications":
-        resumeData.certifications.forEach(({ title, issuer }, index) => {
-          if (!title.trim()) errors.push(`Certification Title is required in certification ${index + 1}`)
-          if (!issuer.trim()) errors.push(`Issuer is required in certification ${index + 1}`)
-        })
-        break
-
-      case "additionalInfo":
-        if (resumeData.languages.length === 0 || !resumeData.languages[0].name?.trim()) {
-          errors.push("At least one language is required")
-        }
-        if (resumeData.interests.length === 0 || !resumeData.interests[0]?.trim()) {
-          errors.push("At least one interest is required")
-        }
-        break
-
-      default:
-        break
+    const merged = { ...data };
+    
+    if (isFieldEmpty(merged.profileInfo?.fullName)) {
+      merged.profileInfo = { ...DUMMY_RESUME_DATA.profileInfo, ...merged.profileInfo, fullName: merged.profileInfo?.fullName || DUMMY_RESUME_DATA.profileInfo.fullName, designation: merged.profileInfo?.designation || DUMMY_RESUME_DATA.profileInfo.designation, summary: merged.profileInfo?.summary || DUMMY_RESUME_DATA.profileInfo.summary };
+    }
+    
+    if (isFieldEmpty(merged.contactInfo?.email) && isFieldEmpty(merged.contactInfo?.phone)) {
+      merged.contactInfo = { ...DUMMY_RESUME_DATA.contactInfo, ...merged.contactInfo };
     }
 
-    if (errors.length > 0) {
-      setErrorMsg(errors.join(", "))
-      return
+    if (isFieldEmpty(merged.workExperience)) {
+      merged.workExperience = DUMMY_RESUME_DATA.workExperience;
+    }
+    
+    if (isFieldEmpty(merged.education)) {
+      merged.education = DUMMY_RESUME_DATA.education;
+    }
+    
+    if (isFieldEmpty(merged.skills)) {
+      merged.skills = DUMMY_RESUME_DATA.skills;
     }
 
-    setErrorMsg("")
-    goToNextStep()
+    if (isFieldEmpty(merged.projects)) {
+      merged.projects = DUMMY_RESUME_DATA.projects;
+    }
+
+    return merged;
   }
 
-  const goToNextStep = () => {
-    const pages = [
-      "profile-info",
-      "contact-info",
-      "work-experience",
-      "education-info",
-      "skills",
-      "projects",
-      "certifications",
-      "additionalInfo",
-    ]
 
-    if (currentPage === "additionalInfo") setOpenPreviewModal(true)
+  const renderAllForms = () => {
+    const defaultOrder = ['summary', 'workExperience', 'education', 'skills', 'projects', 'certifications', 'languages', 'interests'];
+    const isCustomTheme = resumeData?.template?.theme === 'custom';
+    const order = isCustomTheme && resumeData?.template?.customConfig?.sectionOrder ? resumeData.template.customConfig.sectionOrder : defaultOrder;
+    const visible = isCustomTheme && resumeData?.template?.customConfig?.visibleSections ? resumeData.template.customConfig.visibleSections : {};
 
-    const currentIndex = pages.indexOf(currentPage)
-    if (currentIndex !== -1 && currentIndex < pages.length - 1) {
-      const nextIndex = currentIndex + 1
-      setCurrentPage(pages[nextIndex])
+    return (
+      <div className="space-y-6 max-w-4xl mx-auto w-full">
+        {/* Profile Info and Contact Info always at top */}
+        <ProfileInfoForm
+          profileData={resumeData?.profileInfo}
+          updateSection={(key, value) => updateSection("profileInfo", key, value)}
+        />
+        <ContactInfoForm
+          contactInfo={resumeData?.contactInfo}
+          updateSection={(key, value) => updateSection("contactInfo", key, value)}
+        />
 
-      const percent = Math.round((nextIndex / (pages.length - 1)) * 100)
-      setProgress(percent)
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    }
-  }
+        {order.map((sectionId) => {
+          if (resumeData?.template?.customConfig?.visibleSections && visible[sectionId] === false) {
+            return null;
+          }
 
-  const goBack = () => {
-    const pages = [
-      "profile-info",
-      "contact-info",
-      "work-experience",
-      "education-info",
-      "skills",
-      "projects",
-      "certifications",
-      "additionalInfo",
-    ]
-
-    if (currentPage === "profile-info") navigate("/dashboard")
-
-    const currentIndex = pages.indexOf(currentPage)
-    if (currentIndex > 0) {
-      const prevIndex = currentIndex - 1
-      setCurrentPage(pages[prevIndex])
-
-      const percent = Math.round((prevIndex / (pages.length - 1)) * 100)
-      setProgress(percent)
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    }
-  }
-
-  const renderForm = () => {
-    switch (currentPage) {
-      case "profile-info":
-        return (
-          <ProfileInfoForm
-            profileData={resumeData?.profileInfo}
-            updateSection={(key, value) => updateSection("profileInfo", key, value)}
-            onNext={validateAndNext}
-          />
-        )
-
-      case "contact-info":
-        return (
-          <ContactInfoForm
-            contactInfo={resumeData?.contactInfo}
-            updateSection={(key, value) => updateSection("contactInfo", key, value)}
-          />
-        )
-
-      case "work-experience":
-        return (
-          <WorkExperienceForm
-            workExperience={resumeData?.workExperience}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("workExperience", index, key, value)
-            }}
-            addArrayItem={(newItem) => addArrayItem("workExperience", newItem)}
-            removeArrayItem={(index) => removeArrayItem("workExperience", index)}
-          />
-        )
-
-      case "education-info":
-        return (
-          <EducationDetailsForm
-            educationInfo={resumeData?.education}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("education", index, key, value)
-            }}
-            addArrayItem={(newItem) => addArrayItem("education", newItem)}
-            removeArrayItem={(index) => removeArrayItem("education", index)}
-          />
-        )
-
-      case "skills":
-        return (
-          <SkillsInfoForm
-            skillsInfo={resumeData?.skills}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("skills", index, key, value)
-            }}
-            addArrayItem={(newItem) => addArrayItem("skills", newItem)}
-            removeArrayItem={(index) => removeArrayItem("skills", index)}
-          />
-        )
-
-      case "projects":
-        return (
-          <ProjectDetailForm
-            projectInfo={resumeData?.projects}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("projects", index, key, value)
-            }}
-            addArrayItem={(newItem) => addArrayItem("projects", newItem)}
-            removeArrayItem={(index) => removeArrayItem("projects", index)}
-          />
-        )
-
-      case "certifications":
-        return (
-          <CertificationInfoForm
-            certifications={resumeData?.certifications}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("certifications", index, key, value)
-            }}
-            addArrayItem={(newItem) => addArrayItem("certifications", newItem)}
-            removeArrayItem={(index) => removeArrayItem("certifications", index)}
-          />
-        )
-
-      case "additionalInfo":
-        return (
-          <AdditionalInfoForm
-            languages={resumeData.languages}
-            interests={resumeData.interests}
-            updateArrayItem={(section, index, key, value) => updateArrayItem(section, index, key, value)}
-            addArrayItem={(section, newItem) => addArrayItem(section, newItem)}
-            removeArrayItem={(section, index) => removeArrayItem(section, index)}
-          />
-        )
-
-      default:
-        return null
-    }
+          switch (sectionId) {
+            case "workExperience":
+              return (
+                <WorkExperienceForm key={sectionId}
+                  workExperience={resumeData?.workExperience}
+                  updateArrayItem={(index, key, value) => updateArrayItem("workExperience", index, key, value)}
+                  addArrayItem={(newItem) => addArrayItem("workExperience", newItem)}
+                  removeArrayItem={(index) => removeArrayItem("workExperience", index)}
+                />
+              )
+            case "education":
+              return (
+                <EducationDetailsForm key={sectionId}
+                  educationInfo={resumeData?.education}
+                  updateArrayItem={(index, key, value) => updateArrayItem("education", index, key, value)}
+                  addArrayItem={(newItem) => addArrayItem("education", newItem)}
+                  removeArrayItem={(index) => removeArrayItem("education", index)}
+                />
+              )
+            case "skills":
+              return (
+                <SkillsInfoForm key={sectionId}
+                  skillsInfo={resumeData?.skills}
+                  updateArrayItem={(index, key, value) => updateArrayItem("skills", index, key, value)}
+                  addArrayItem={(newItem) => addArrayItem("skills", newItem)}
+                  removeArrayItem={(index) => removeArrayItem("skills", index)}
+                />
+              )
+            case "projects":
+              return (
+                <ProjectDetailForm key={sectionId}
+                  projectInfo={resumeData?.projects}
+                  updateArrayItem={(index, key, value) => updateArrayItem("projects", index, key, value)}
+                  addArrayItem={(newItem) => addArrayItem("projects", newItem)}
+                  removeArrayItem={(index) => removeArrayItem("projects", index)}
+                />
+              )
+            case "certifications":
+              return (
+                <CertificationInfoForm key={sectionId}
+                  certifications={resumeData?.certifications}
+                  updateArrayItem={(index, key, value) => updateArrayItem("certifications", index, key, value)}
+                  addArrayItem={(newItem) => addArrayItem("certifications", newItem)}
+                  removeArrayItem={(index) => removeArrayItem("certifications", index)}
+                />
+              )
+            case "languages":
+              return (
+                <LanguagesForm key={sectionId}
+                  languages={resumeData?.languages}
+                  updateArrayItem={(index, key, value) => updateArrayItem("languages", index, key, value)}
+                  addArrayItem={() => addArrayItem("languages", { name: "" })}
+                  removeArrayItem={(index) => removeArrayItem("languages", index)}
+                />
+              )
+            case "interests":
+              return (
+                <InterestsForm key={sectionId}
+                  interests={resumeData?.interests}
+                  updateArrayItem={(index, key, value) => updateArrayItem("interests", index, key, value)}
+                  addArrayItem={() => addArrayItem("interests", "")}
+                  removeArrayItem={(index) => removeArrayItem("interests", index)}
+                />
+              )
+            default:
+              const customSec = resumeData?.customSections?.find(s => s.id === sectionId);
+              if (customSec) {
+                return (
+                  <CustomSectionForm key={sectionId}
+                    customSection={customSec}
+                    updateSection={(key, value) => {
+                      setResumeData(prev => ({
+                        ...prev,
+                        customSections: prev.customSections.map(s => s.id === sectionId ? { ...s, [key]: value } : s)
+                      }))
+                    }}
+                    updateArrayItem={(index, key, value) => {
+                      setResumeData(prev => {
+                        const newCustomSections = [...prev.customSections]
+                        const secIndex = newCustomSections.findIndex(s => s.id === sectionId)
+                        if (secIndex >= 0) {
+                          const newItems = [...newCustomSections[secIndex].items]
+                          if (key === null) {
+                            newItems[index] = value
+                          } else {
+                            newItems[index] = { ...newItems[index], [key]: value }
+                          }
+                          newCustomSections[secIndex].items = newItems
+                        }
+                        return { ...prev, customSections: newCustomSections }
+                      })
+                    }}
+                    addArrayItem={(newItem) => {
+                      setResumeData(prev => {
+                        const newCustomSections = [...prev.customSections]
+                        const secIndex = newCustomSections.findIndex(s => s.id === sectionId)
+                        if (secIndex >= 0) {
+                          newCustomSections[secIndex].items = [...newCustomSections[secIndex].items, newItem]
+                        }
+                        return { ...prev, customSections: newCustomSections }
+                      })
+                    }}
+                    removeArrayItem={(index) => {
+                      setResumeData(prev => {
+                        const newCustomSections = [...prev.customSections]
+                        const secIndex = newCustomSections.findIndex(s => s.id === sectionId)
+                        if (secIndex >= 0) {
+                          newCustomSections[secIndex].items = newCustomSections[secIndex].items.filter((_, i) => i !== index)
+                        }
+                        return { ...prev, customSections: newCustomSections }
+                      })
+                    }}
+                  />
+                )
+              }
+              return null;
+          }
+        })}
+      </div>
+    )
   }
 
   const updateSection = (section, key, value) => {
@@ -651,10 +620,21 @@ const EditResume = () => {
     setResumeData(prev => ({
       ...prev,
       template: {
-        theme: theme,
-        colorPalette: []
+        ...prev.template,
+        theme: theme
       }
-    }));
+    }))
+  }
+
+  const updateCustomConfig = (newConfig) => {
+    setResumeData(prev => ({
+      ...prev,
+      template: {
+        ...prev.template,
+        theme: 'custom',
+        customConfig: newConfig
+      }
+    }))
   }
 
   useEffect(() => {
@@ -664,6 +644,7 @@ const EditResume = () => {
   }, [resumeId])
 
   return (
+    <PageTransition>
     <DashboardLayout>
       <div className={containerStyles.main}>
         <div className={containerStyles.header}>
@@ -692,34 +673,38 @@ const EditResume = () => {
           </div>
         </div>
         <div className={containerStyles.grid}>
-          <div className={containerStyles.formContainer}>
-            <StepProgress progress={progress} />
-            {renderForm()}
-            <div className='p-4 sm:p-6'>
+          <div className='flex flex-col h-full lg:h-[calc(100vh-200px)]'>
+            <div className='flex-1 overflow-y-auto custom-scrollbar pr-2 mb-4'>
+              <div className={containerStyles.formContainer}>
+                {renderAllForms()}
+              </div>
+            </div>
+
+            <div className='shrink-0 bg-[#0a0508] border border-white/10 rounded-2xl p-4 shadow-sm'>
               {errorMsg && (
-                <div className={containerStyles.error}>
-                  <AlertCircle size={16} />
+                <div className='mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-2 text-red-400 text-sm'>
+                  <AlertCircle size={16} className='mt-0.5 shrink-0' />
                   {errorMsg}
                 </div>
               )}
 
-              <div className='flex flex-wrap items-center justify-end gap-3'>
-                <button className={buttonStyles.back} onClick={goBack} disabled={isLoading}>
+              <div className='flex flex-wrap items-center justify-between gap-3'>
+                <button className={buttonStyles.back} onClick={() => navigate('/dashboard')} disabled={isLoading}>
                   <ArrowLeft size={16} />
-                  Back
+                  Dashboard
                 </button>
 
-                <button className={buttonStyles.save} onClick={uploadResumeImages} disabled={isLoading}>
-                  {isLoading ? <Loader2 size={16} className='animate-spin' />
-                    : <Save size={16} />}
-                  {isLoading ? "Saving..." : "Save & Exit"}
-                </button>
-
-                <button className={buttonStyles.next} onClick={validateAndNext} disabled={isLoading}>
-                  {currentPage === "additionalInfo" && <Download size={16} />}
-                  {currentPage === "additionalInfo" ? "Preview & Download" : "Next"}
-                  {currentPage === "additionalInfo" && <ArrowLeft size={16} className='rotate-180' />}
-                </button>
+                <div className="flex gap-3">
+                  <button className={buttonStyles.save} onClick={uploadResumeImages} disabled={isLoading}>
+                    {isLoading ? <Loader2 size={16} className='animate-spin' />
+                      : <Save size={16} />}
+                    {isLoading ? "Saving..." : "Save & Exit"}
+                  </button>
+                  <button className={buttonStyles.next} onClick={downloadPDF} disabled={isLoading}>
+                    <Download size={16} />
+                    Download PDF
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -737,7 +722,7 @@ const EditResume = () => {
                 <div className={containerStyles.previewInner}>
                   <RenderResume key={`preview-&{resumeData?.template?.theme}`}
                     templateId={resumeData?.template?.theme || ""}
-                    resumeData={resumeData}
+                    resumeData={mergeWithDummyData(resumeData)}
                     containerWidth={previewWidth}
                   />
                 </div>
@@ -748,13 +733,16 @@ const EditResume = () => {
       </div>
 
       <Modal isOpen={openThemeSelector} onClose={() => setOpenThemeSelector(false)}
-        title="Change Title">
-          <div className={containerStyles.modalContent}>
-              <ThemeSelector selectedTheme={resumeData?.template.theme}
-              setSelectedTheme={updateTheme} onClose={() => setOpenThemeSelector(false)}
-              />
-          </div>
-      </Modal>
+    title="Change Theme" maxWidth="max-w-7xl">
+      <ThemeSelector 
+        selectedTheme={resumeData?.template?.theme}
+        setSelectedTheme={updateTheme} 
+        onClose={() => setOpenThemeSelector(false)}
+        resumeData={resumeData}
+        customConfig={resumeData?.template?.customConfig}
+        setCustomConfig={updateCustomConfig}
+      />
+</Modal>
       <Modal isOpen={openPreviewModal} onClose={() => setOpenPreviewModal(false)}
         title={resumeData.title}
         showActionBtn
@@ -773,7 +761,7 @@ const EditResume = () => {
         }
         onActionClick={downloadPDF}
         >
-          <div className='relative'>
+          <div className='p-6 flex flex-col items-center bg-stone-800/50 min-h-[70vh]'>
             <div className='text-center mb-4'>
               <div className={statusStyles.modalBadge}>
                 <div className={iconStyles.pulseDot}></div>
@@ -781,12 +769,12 @@ const EditResume = () => {
               </div>
             </div>
 
-            <div className={containerStyles.pdfPreview}>
-              <div ref={resumeDownloadRef} className='a4-wrapper'>
+            <div className='flex justify-center overflow-auto max-h-[75vh]'>
+              <div ref={resumeDownloadRef} className='a4-wrapper shadow-xl' style={{ width: '210mm', minHeight: '297mm' }}>
                 <div className='w-full h-full'>
                   <RenderResume key={`pdf-${resumeData?.template?.theme}`}
                   templateId={resumeData?.template?.theme || ""}
-                  resumeData={resumeData}
+                  resumeData={mergeWithDummyData(resumeData)}
                   containerWidth={null}
                   />
                 </div>
@@ -799,11 +787,12 @@ const EditResume = () => {
         <div className={containerStyles.hiddenThumbnail}>
           <RenderResume key={`thumb-${resumeData?.template?.theme}`}
           templateId={resumeData?.template?.theme || ""}
-          resumeData={resumeData}
+          resumeData={mergeWithDummyData(resumeData)}
           />
         </div>
       </div>
     </DashboardLayout>
+    </PageTransition>
   )
 }
 

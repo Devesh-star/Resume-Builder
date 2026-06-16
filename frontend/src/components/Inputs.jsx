@@ -32,13 +32,14 @@ export const Inputs = ({ value, onChange, label, placeholder, type = 'text' }) =
     )
 }
 
-export const ProfilePhotoSelector = ({ image, setImage, preview, setPreview }) => {
+export const ProfilePhotoSelector = ({ setImage, preview, setPreview }) => {
   const inputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState(preview || null);
   const [hovered, setHovered] = useState(false);
   const styles = photoSelectorStyles;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (preview) setPreviewUrl(preview);
   }, [preview]);
 

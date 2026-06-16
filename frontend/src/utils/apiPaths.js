@@ -1,9 +1,10 @@
-export const BASE_URL = 'https://resume-i0l0.onrender.com';
+export const BASE_URL = 'http://localhost:4000';
 
 export const API_PATHS = {
   AUTH: {
     REGISTER: '/api/auth/register',
     LOGIN: '/api/auth/login',
+    GOOGLE_LOGIN: '/api/auth/google-login',
     GET_PROFILE: '/api/auth/profile',
   },
 
