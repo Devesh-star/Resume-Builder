@@ -1,49 +1,43 @@
-import React, {useRef, useState, useEffect} from 'react'
-import { inputStyles, photoSelectorStyles, titleInputStyles } from '../assets/dummystyle'
-import {Check, Edit, Eye, EyeOff, Camera, Trash2} from 'lucide-react'
+import React, { useRef, useState, useEffect } from 'react';
+import { Check, Edit, Eye, EyeOff, Camera, Trash2 } from 'lucide-react';
 
 export const Inputs = ({ value, onChange, label, placeholder, type = 'text' }) => {
+  const [showPassword, setShowPassword] = useState(false);
 
-    const [showPassword, setshowPassword] = useState(false)
-    const [isFocused, setisFocused] = useState(false)
-    const styles = inputStyles;
-
-
-    return (
-        <div className={styles.wrapper}>
-            {label && <label className={styles.label}>{label}</label>}
-            <div className={styles.inputContainer(isFocused)}>
-                <input type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
-                placeholder={placeholder}
-                className={styles.inputField}
-                value={value}
-                onChange={onChange}
-                onFocus={() => setisFocused(true)}
-                onBlur={() => setisFocused(false)}
-                />
-                {type === 'password' && (
-                    <button type='button' onClick={() => setshowPassword(!showPassword)}
-                    className={styles.toggleButton}>
-                        {showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
-                    </button>
-                )}
-            </div>
-        </div>
-    )
-}
+  return (
+    <div className="mb-5">
+      {label && <label className="block text-sm font-semibold text-text-main mb-1.5">{label}</label>}
+      <div className="relative">
+        <input
+          type={type === 'password' ? (showPassword ? 'text' : 'password') : type}
+          placeholder={placeholder}
+          className="w-full text-sm text-text-main bg-white border border-app-border px-4 py-3 rounded-xl placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200"
+          value={value}
+          onChange={onChange}
+        />
+        {type === 'password' && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const ProfilePhotoSelector = ({ setImage, preview, setPreview }) => {
   const inputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState(preview || null);
-  const [hovered, setHovered] = useState(false);
-  const styles = photoSelectorStyles;
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (preview) setPreviewUrl(preview);
   }, [preview]);
 
-  const handleImageChange = e => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
@@ -62,34 +56,37 @@ export const ProfilePhotoSelector = ({ setImage, preview, setPreview }) => {
   const chooseFile = () => inputRef.current.click();
 
   return (
-    <div className={styles.container}>
-      <input type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} className={styles.hiddenInput} />
+    <div className="flex flex-col items-center justify-center gap-3">
+      <input type="file" accept="image/*" ref={inputRef} onChange={handleImageChange} className="hidden" />
+      
       {!previewUrl ? (
-        <div
-          className={styles.placeholder(hovered)}
+        <button
+          type="button"
           onClick={chooseFile}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+          className="w-24 h-24 rounded-full border-2 border-dashed border-app-border bg-app-bg hover:bg-secondary flex flex-col items-center justify-center text-text-muted hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          <button type="button" className={styles.cameraButton}>
-            <Camera size={20} />
-          </button>
-        </div>
+          <Camera size={24} className="mb-1" />
+          <span className="text-[10px] font-medium uppercase tracking-wider">Upload</span>
+        </button>
       ) : (
-        <div
-          className={styles.previewWrapper}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <div className={styles.previewImageContainer(hovered)} onClick={chooseFile}>
-            <img src={previewUrl} alt="profile" className={styles.previewImage} />
-          </div>
-          <div className={styles.overlay}>
-            <button type="button" className={styles.actionButton('white/80','white','gray-800')} onClick={chooseFile}>
-              <Edit size={16} />
+        <div className="relative group w-24 h-24 rounded-full">
+          <img src={previewUrl} alt="profile" className="w-full h-full rounded-full object-cover border border-app-border shadow-sm" />
+          <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={chooseFile}
+              className="p-1.5 bg-white text-text-main rounded-full hover:bg-gray-100 transition-colors"
+              title="Edit Photo"
+            >
+              <Edit size={14} />
             </button>
-            <button type="button" className={styles.actionButton('red-500','red-600','white')} onClick={handleRemove}>
-              <Trash2 size={16} />
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="p-1.5 bg-error text-white rounded-full hover:bg-red-600 transition-colors"
+              title="Remove Photo"
+            >
+              <Trash2 size={14} />
             </button>
           </div>
         </div>
@@ -100,34 +97,31 @@ export const ProfilePhotoSelector = ({ setImage, preview, setPreview }) => {
 
 export const TitleInput = ({ title, setTitle }) => {
   const [editing, setEditing] = useState(false);
-  const [focused, setFocused] = useState(false);
-  const styles = titleInputStyles;
 
   return (
-    <div className={styles.container}>
+    <div className="flex items-center gap-2">
       {editing ? (
-        <>
+        <div className="flex items-center gap-2">
           <input
             type="text"
             placeholder="Resume title"
-            className={styles.inputField(focused)}
+            className="text-2xl sm:text-3xl font-bold text-text-main bg-transparent border-b-2 border-primary outline-none px-1 py-1 w-full max-w-sm"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
             autoFocus
+            onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
           />
-          <button className={styles.confirmButton} onClick={() => setEditing(false)}>
-            <Check className="w-5 h-5" />
+          <button className="p-1.5 text-success hover:bg-success/10 rounded-lg transition-colors" onClick={() => setEditing(false)}>
+            <Check size={20} />
           </button>
-        </>
+        </div>
       ) : (
-        <>
-          <h2 className={styles.titleText}>{title}</h2>
-          <button className={styles.editButton} onClick={() => setEditing(true)}>
-            <Edit className={styles.editIcon} />
+        <div className="flex items-center gap-3 group">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-text-main tracking-tight">{title}</h2>
+          <button className="p-1.5 text-text-muted hover:text-primary hover:bg-secondary rounded-lg transition-colors opacity-0 group-hover:opacity-100" onClick={() => setEditing(true)}>
+            <Edit size={16} />
           </button>
-        </>
+        </div>
       )}
     </div>
   );

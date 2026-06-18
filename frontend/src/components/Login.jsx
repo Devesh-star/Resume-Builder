@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
@@ -6,14 +5,15 @@ import { motion } from "framer-motion";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
 import { UserContext } from "../components/UserContext";
-import {Inputs} from "../components/Inputs";
+import { Inputs } from "../components/Inputs";
 import { validateEmail } from "../utils/helper";
-import { authStyles as styles } from "../assets/dummystyle";
+import { FileText } from "lucide-react";
 
-const Login = ({ setCurrentPage }) => {
+const Login = ({ setCurrentPage, onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -32,6 +32,7 @@ const Login = ({ setCurrentPage }) => {
     }
 
     setError(null);
+    setLoading(true);
 
     try {
       const response = await axiosInstance.post(
@@ -44,18 +45,22 @@ const Login = ({ setCurrentPage }) => {
       if (token) {
         localStorage.setItem("token", token);
         updateUser(response.data);
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
         navigate("/dashboard");
       }
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 403) {
-        // Don't let the interceptor redirect on login failure
         setError(err.response?.data?.message || "Invalid email or password");
-        return;
+      } else {
+        setError(
+          err.response?.data?.message ||
+            "Something went wrong. Please try again later"
+        );
       }
-      setError(
-        err.response?.data?.message ||
-          "Something went wrong. Please try again later"
-      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,6 +77,9 @@ const Login = ({ setCurrentPage }) => {
       if (token) {
         localStorage.setItem("token", token);
         updateUser(response.data);
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
         navigate("/dashboard");
       }
     } catch (err) {
@@ -84,24 +92,25 @@ const Login = ({ setCurrentPage }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={styles.container}
+      className="w-full"
     >
-      <div className={styles.headerWrapper}>
-        <h3 className={styles.title}>Welcome to CV Pilot</h3>
-        <p className={styles.subtitle}>
-          Sign in to continue building amazing resumes
-        </p>
+      <div className="text-center mb-8">
+        <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-primary mx-auto mb-4">
+          <FileText size={24} />
+        </div>
+        <h3 className="text-2xl font-extrabold text-text-main tracking-tight">Welcome back</h3>
+        <p className="text-text-muted mt-2">Sign in to your account to continue</p>
       </div>
 
-      <form onSubmit={handleLogin} className={styles.form}>
+      <form onSubmit={handleLogin} className="space-y-4">
         <Inputs
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          label="Email"
-          placeholder="email@example.com"
+          label="Email Address"
+          placeholder="you@company.com"
           type="email"
         />
 
@@ -109,40 +118,50 @@ const Login = ({ setCurrentPage }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           label="Password"
-          placeholder="Min 8 characters"
+          placeholder="••••••••"
           type="password"
         />
 
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {error && (
+          <div className="p-3 bg-error/10 border border-error/20 text-error text-sm rounded-lg flex items-center gap-2">
+            <span className="font-medium">Error:</span> {error}
+          </div>
+        )}
 
-        <button type="submit" className={styles.submitButton}>
-          Sign In
+        <button 
+          type="submit" 
+          className="btn-primary w-full py-3 text-base mt-2"
+          disabled={loading}
+        >
+          {loading ? "Signing in..." : "Sign in"}
         </button>
 
-        <div className="auth-divider">
-          <span>or</span>
+        <div className="flex items-center gap-3 my-6">
+          <hr className="flex-1 border-app-border" />
+          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Or continue with</span>
+          <hr className="flex-1 border-app-border" />
         </div>
 
         <div className="flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleLogin}
             onError={() => setError("Google login failed")}
-            theme="filled_black"
+            theme="outline"
             size="large"
-            shape="pill"
-            text="signin_with"
             width="100%"
+            text="signin_with"
+            shape="rectangular"
           />
         </div>
 
-        <p className={styles.switchText}>
+        <p className="text-center text-sm text-text-muted mt-8">
           Don't have an account?{" "}
           <button
             type="button"
             onClick={() => setCurrentPage("signup")}
-            className={styles.switchButton}
+            className="font-semibold text-primary hover:text-primary-hover transition-colors"
           >
-            Sign Up
+            Sign up
           </button>
         </p>
       </form>

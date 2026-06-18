@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { formatYearMonth } from "../utils/helper";
 
 const Title = ({ text }) => (
-  <h2 className="text-sm font-bold uppercase tracking-widest text-white bg-[#D4577A] px-4 py-1.5 mb-4 inline-block shadow-sm">
+  <h2 className="text-sm font-bold uppercase tracking-widest text-white bg-[#4F46E5] px-4 py-1.5 mb-4 inline-block shadow-sm">
     {text}
   </h2>
 );
@@ -53,12 +53,12 @@ const TemplateFour = ({ resumeData = {}, containerWidth }) => {
       }}
     >
       {/* Header Block */}
-      <div className="bg-gray-900 text-white p-8 mb-6 shadow-md">
+      <div className="bg-slate-50 text-white p-8 mb-6 shadow-md">
         <h1 className="text-3xl font-extrabold uppercase tracking-widest mb-2 text-center">
           {profileInfo.fullName}
         </h1>
         {profileInfo.designation && (
-          <p className="text-lg text-[#E88FA2] font-medium text-center mb-4 uppercase tracking-widest">
+          <p className="text-lg text-[#818CF8] font-medium text-center mb-4 uppercase tracking-widest">
             {profileInfo.designation}
           </p>
         )}
@@ -75,7 +75,7 @@ const TemplateFour = ({ resumeData = {}, containerWidth }) => {
       <div className="px-10 pb-10">
         {/* Summary */}
         {profileInfo.summary && (
-          <div className="mb-6 border-l-4 border-[#E88FA2] pl-4">
+          <div className="mb-6 border-l-4 border-[#818CF8] pl-4">
             <p className="text-sm text-gray-700 leading-relaxed font-medium italic">
               {profileInfo.summary}
             </p>
@@ -92,7 +92,7 @@ const TemplateFour = ({ resumeData = {}, containerWidth }) => {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="font-extrabold text-gray-900 text-base">{exp.role}</h3>
-                      <p className="text-sm font-bold text-[#D4577A]">{exp.company}</p>
+                      <p className="text-sm font-bold text-[#4F46E5]">{exp.company}</p>
                     </div>
                     <div className="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded">
                       {formatYearMonth(exp.startDate)} — {formatYearMonth(exp.endDate)}
@@ -117,8 +117,8 @@ const TemplateFour = ({ resumeData = {}, containerWidth }) => {
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-extrabold text-gray-900 text-base">{proj.title}</h3>
                     <div className="flex gap-3">
-                      {proj.liveDemo && <a href={proj.liveDemo} className="text-xs font-bold text-[#D4577A] bg-[#FAF5F0] px-2 py-1 rounded hover:bg-[#E88FA2] hover:text-white transition-colors">Live Demo</a>}
-                      {proj.github && <a href={proj.github} className="text-xs font-bold text-[#D4577A] bg-[#FAF5F0] px-2 py-1 rounded hover:bg-[#E88FA2] hover:text-white transition-colors">Source</a>}
+                      {proj.liveDemo && <a href={proj.liveDemo} className="text-xs font-bold text-[#4F46E5] bg-[#F8FAFC] px-2 py-1 rounded hover:bg-[#818CF8] hover:text-white transition-colors">Live Demo</a>}
+                      {proj.github && <a href={proj.github} className="text-xs font-bold text-[#4F46E5] bg-[#F8FAFC] px-2 py-1 rounded hover:bg-[#818CF8] hover:text-white transition-colors">Source</a>}
                     </div>
                   </div>
                   <ul className="mt-2">
@@ -137,10 +137,10 @@ const TemplateFour = ({ resumeData = {}, containerWidth }) => {
               <Title text="Education" />
               <div className="space-y-4">
                 {education.map((edu, i) => (
-                  <div key={i} className="bg-[#FAF5F0] p-4 rounded-lg border border-[#E88FA2]/20">
+                  <div key={i} className="bg-[#F8FAFC] p-4 rounded-lg border border-[#818CF8]/20">
                     <h3 className="font-extrabold text-gray-900 text-sm mb-1">{edu.degree}</h3>
                     <p className="text-sm text-gray-700 font-medium mb-2">{edu.institution}</p>
-                    <div className="text-xs font-bold text-[#D4577A]">
+                    <div className="text-xs font-bold text-[#4F46E5]">
                       {formatYearMonth(edu.startDate)} — {formatYearMonth(edu.endDate)}
                     </div>
                   </div>
@@ -158,7 +158,7 @@ const TemplateFour = ({ resumeData = {}, containerWidth }) => {
                 <div className="mb-4">
                   <div className="flex flex-wrap gap-2">
                     {skills.map((s, i) => (
-                      <span key={i} className="px-3 py-1.5 bg-gray-900 text-white text-xs font-bold rounded shadow-sm">
+                      <span key={i} className="px-3 py-1.5 bg-slate-50 text-white text-xs font-bold rounded shadow-sm">
                         {s.name}
                       </span>
                     ))}

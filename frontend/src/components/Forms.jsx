@@ -3,65 +3,65 @@
 import { Inputs } from "./Inputs";
 import { RatingInput } from "./ResumeSection";
 import { Plus, Trash2 } from "lucide-react";
-import {
-  commonStyles,
-  additionalInfoStyles,
-  certificationInfoStyles,
-  contactInfoStyles,
-  educationDetailsStyles,
-  profileInfoStyles,
-  projectDetailStyles,
-  skillsInfoStyles,
-  workExperienceStyles
-} from "../assets/dummystyle";
+
+// Standardized styles for forms
+const styles = {
+  container: "bg-white border border-app-border rounded-2xl p-6 shadow-sm mb-6",
+  heading: "text-xl font-bold text-text-main mb-6 pb-4 border-b border-app-border",
+  item: "bg-app-bg border border-app-border rounded-xl p-5 relative group transition-all hover:border-primary/30 mb-4",
+  textarea: "w-full text-sm text-text-main bg-white border border-app-border px-4 py-3 rounded-xl placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 resize-none",
+  addButton: "btn-outline w-full py-3 mt-2 flex items-center justify-center gap-2 border-dashed bg-app-bg hover:bg-secondary",
+  trashButton: "absolute top-4 right-4 p-2 text-text-muted hover:text-error hover:bg-error/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100",
+  label: "block text-sm font-semibold text-text-main mb-1.5"
+};
 
 // LanguagesForm Component
 export const LanguagesForm = ({ languages, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={additionalInfoStyles.container}>
-      <h2 className={additionalInfoStyles.heading}>Languages</h2>
-      <div className="mb-6">
-        <div className="space-y-6">
-          {languages?.map((lang, index) => (
-            <div key={index} className={additionalInfoStyles.languageItem}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                <Inputs
-                  label="Language"
-                  placeholder="e.g. English"
-                  value={lang.name || ""}
-                  onChange={({ target }) => updateArrayItem("languages", index, "name", target.value)}
-                />
-                <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-4">Proficiency</label>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Languages</h2>
+      <div>
+        {languages?.map((lang, index) => (
+          <div key={index} className={styles.item}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <Inputs
+                label="Language"
+                placeholder="e.g. English"
+                value={lang.name || ""}
+                onChange={({ target }) => updateArrayItem("languages", index, "name", target.value)}
+              />
+              <div>
+                <label className={styles.label}>Proficiency</label>
+                <div className="mt-2">
                   <RatingInput
                     value={lang.progress || 0}
                     total={5}
-                    color="#8b5cf6"
-                    bgColor="#e2e8f0"
+                    color="#7C3AED"
+                    bgColor="#E5E7EB"
                     onChange={(value) => updateArrayItem("languages", index, "progress", value)}
                   />
                 </div>
               </div>
-              {languages.length > 1 && (
-                <button
-                  type="button"
-                  className={commonStyles.trashButton}
-                  onClick={() => removeArrayItem("languages", index)}
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
             </div>
-          ))}
+            {languages.length > 1 && (
+              <button
+                type="button"
+                className={styles.trashButton}
+                onClick={() => removeArrayItem("languages", index)}
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </div>
+        ))}
 
-          <button
-            type="button"
-            className={`${commonStyles.addButtonBase} ${additionalInfoStyles.addButtonLanguage}`}
-            onClick={() => addArrayItem("languages", { name: "", progress: 0 })}
-          >
-            <Plus size={16} /> Add Language
-          </button>
-        </div>
+        <button
+          type="button"
+          className={styles.addButton}
+          onClick={() => addArrayItem("languages", { name: "", progress: 0 })}
+        >
+          <Plus size={18} /> Add Language
+        </button>
       </div>
     </div>
   );
@@ -70,37 +70,36 @@ export const LanguagesForm = ({ languages, updateArrayItem, addArrayItem, remove
 // InterestsForm Component
 export const InterestsForm = ({ interests, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={additionalInfoStyles.container}>
-      <h2 className={additionalInfoStyles.heading}>Interests</h2>
-      <div className="mb-6">
-        <div className="space-y-4">
-          {interests?.map((interest, index) => (
-            <div key={index} className={additionalInfoStyles.interestItem}>
-              <Inputs
-                placeholder="e.g. Reading, Photography"
-                value={interest || ""}
-                onChange={({ target }) => updateArrayItem("interests", index, null, target.value)}
-              />
-              {interests.length > 1 && (
-                <button
-                  type="button"
-                  className={commonStyles.trashButton}
-                  onClick={() => removeArrayItem("interests", index)}
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
-            </div>
-          ))}
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Interests</h2>
+      <div>
+        {interests?.map((interest, index) => (
+          <div key={index} className={styles.item}>
+            <Inputs
+              label={`Interest ${index + 1}`}
+              placeholder="e.g. Reading, Photography"
+              value={interest || ""}
+              onChange={({ target }) => updateArrayItem("interests", index, null, target.value)}
+            />
+            {interests.length > 1 && (
+              <button
+                type="button"
+                className={styles.trashButton}
+                onClick={() => removeArrayItem("interests", index)}
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </div>
+        ))}
 
-          <button
-            type="button"
-            className={`${commonStyles.addButtonBase} ${additionalInfoStyles.addButtonInterest}`}
-            onClick={() => addArrayItem("interests", "")}
-          >
-            <Plus size={16} /> Add Interest
-          </button>
-        </div>
+        <button
+          type="button"
+          className={styles.addButton}
+          onClick={() => addArrayItem("interests", "")}
+        >
+          <Plus size={18} /> Add Interest
+        </button>
       </div>
     </div>
   );
@@ -109,11 +108,11 @@ export const InterestsForm = ({ interests, updateArrayItem, addArrayItem, remove
 // CertificationInfoForm Component
 export const CertificationInfoForm = ({ certifications, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={certificationInfoStyles.container}>
-      <h2 className={certificationInfoStyles.heading}>Certifications</h2>
-      <div className="space-y-6 mb-6">
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Certifications</h2>
+      <div>
         {certifications.map((cert, index) => (
-          <div key={index} className={certificationInfoStyles.item}>
+          <div key={index} className={styles.item}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Inputs
                 label="Certificate Title"
@@ -140,7 +139,7 @@ export const CertificationInfoForm = ({ certifications, updateArrayItem, addArra
             {certifications.length > 1 && (
               <button
                 type="button"
-                className={commonStyles.trashButton}
+                className={styles.trashButton}
                 onClick={() => removeArrayItem(index)}
               >
                 <Trash2 size={16} />
@@ -151,7 +150,7 @@ export const CertificationInfoForm = ({ certifications, updateArrayItem, addArra
 
         <button
           type="button"
-          className={`${commonStyles.addButtonBase} ${certificationInfoStyles.addButton}`}
+          className={styles.addButton}
           onClick={() =>
             addArrayItem({
               title: "",
@@ -160,8 +159,7 @@ export const CertificationInfoForm = ({ certifications, updateArrayItem, addArra
             })
           }
         >
-          <Plus size={16} />
-          Add Certification
+          <Plus size={18} /> Add Certification
         </button>
       </div>
     </div>
@@ -171,8 +169,8 @@ export const CertificationInfoForm = ({ certifications, updateArrayItem, addArra
 // ContactInfoForm Component
 export const ContactInfoForm = ({ contactInfo, updateSection }) => {
   return (
-    <div className={contactInfoStyles.container}>
-      <h2 className={contactInfoStyles.heading}>Contact Information</h2>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Contact Information</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
@@ -229,11 +227,11 @@ export const ContactInfoForm = ({ contactInfo, updateSection }) => {
 // EducationDetailsForm Component
 export const EducationDetailsForm = ({ educationInfo, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={educationDetailsStyles.container}>
-      <h2 className={educationDetailsStyles.heading}>Education</h2>
-      <div className="space-y-6 mb-6">
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Education</h2>
+      <div>
         {educationInfo.map((education, index) => (
-          <div key={index} className={educationDetailsStyles.item}>
+          <div key={index} className={styles.item}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Inputs
                 label="Degree"
@@ -266,7 +264,7 @@ export const EducationDetailsForm = ({ educationInfo, updateArrayItem, addArrayI
             {educationInfo.length > 1 && (
               <button
                 type="button"
-                className={commonStyles.trashButton}
+                className={styles.trashButton}
                 onClick={() => removeArrayItem(index)}
               >
                 <Trash2 size={16} />
@@ -277,7 +275,7 @@ export const EducationDetailsForm = ({ educationInfo, updateArrayItem, addArrayI
 
         <button
           type="button"
-          className={`${commonStyles.addButtonBase} ${educationDetailsStyles.addButton}`}
+          className={styles.addButton}
           onClick={() =>
             addArrayItem({
               degree: "",
@@ -287,7 +285,7 @@ export const EducationDetailsForm = ({ educationInfo, updateArrayItem, addArrayI
             })
           }
         >
-          <Plus size={16} /> Add Education
+          <Plus size={18} /> Add Education
         </button>
       </div>
     </div>
@@ -297,35 +295,33 @@ export const EducationDetailsForm = ({ educationInfo, updateArrayItem, addArrayI
 // ProfileInfoForm Component
 export const ProfileInfoForm = ({ profileData, updateSection }) => {
   return (
-    <div className={profileInfoStyles.container}>
-      <h2 className={profileInfoStyles.heading}>Personal Information</h2>
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Personal Information</h2>
 
-      <div className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Inputs
-            label="Full Name"
-            placeholder="John Doe"
-            value={profileData.fullName || ""}
-            onChange={({ target }) => updateSection("fullName", target.value)}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Inputs
+          label="Full Name"
+          placeholder="John Doe"
+          value={profileData.fullName || ""}
+          onChange={({ target }) => updateSection("fullName", target.value)}
+        />
+
+        <Inputs
+          label="Designation"
+          placeholder="Full Stack Developer"
+          value={profileData.designation || ""}
+          onChange={({ target }) => updateSection("designation", target.value)}
+        />
+
+        <div className="md:col-span-2">
+          <label className={styles.label}>Summary</label>
+          <textarea
+            className={styles.textarea}
+            rows={4}
+            placeholder="Short introduction about yourself"
+            value={profileData.summary || ""}
+            onChange={({ target }) => updateSection("summary", target.value)}
           />
-
-          <Inputs
-            label="Designation"
-            placeholder="Full Stack Developer"
-            value={profileData.designation || ""}
-            onChange={({ target }) => updateSection("designation", target.value)}
-          />
-
-          <div className="md:col-span-2">
-            <label className="block text-sm font-bold text-slate-300 mb-3">Summary</label>
-            <textarea
-              className={profileInfoStyles.textarea}
-              rows={4}
-              placeholder="Short introduction about yourself"
-              value={profileData.summary || ""}
-              onChange={({ target }) => updateSection("summary", target.value)}
-            />
-          </div>
         </div>
       </div>
     </div>
@@ -335,11 +331,11 @@ export const ProfileInfoForm = ({ profileData, updateSection }) => {
 // ProjectDetailForm Component
 export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={projectDetailStyles.container}>
-      <h2 className={projectDetailStyles.heading}>Projects</h2>
-      <div className="space-y-6 mb-6">
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Projects</h2>
+      <div>
         {projectInfo.map((project, index) => (
-          <div key={index} className={projectDetailStyles.item}>
+          <div key={index} className={styles.item}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
                 <Inputs
@@ -351,10 +347,10 @@ export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, 
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-bold text-slate-300 mb-3">Description</label>
+                <label className={styles.label}>Description</label>
                 <textarea
                   placeholder="Short description about the project"
-                  className={projectDetailStyles.textarea}
+                  className={styles.textarea}
                   rows={3}
                   value={project.description || ""}
                   onChange={({ target }) => updateArrayItem(index, "description", target.value)}
@@ -379,7 +375,7 @@ export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, 
             {projectInfo.length > 1 && (
               <button
                 type="button"
-                className={commonStyles.trashButton}
+                className={styles.trashButton}
                 onClick={() => removeArrayItem(index)}
               >
                 <Trash2 size={16} />
@@ -390,7 +386,7 @@ export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, 
 
         <button
           type="button"
-          className={`${commonStyles.addButtonBase} ${projectDetailStyles.addButton}`}
+          className={styles.addButton}
           onClick={() =>
             addArrayItem({
               title: "",
@@ -400,8 +396,7 @@ export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, 
             })
           }
         >
-          <Plus size={16} />
-          Add Project
+          <Plus size={18} /> Add Project
         </button>
       </div>
     </div>
@@ -411,11 +406,11 @@ export const ProjectDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, 
 // SkillsInfoForm Component
 export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={skillsInfoStyles.container}>
-      <h2 className={skillsInfoStyles.heading}>Skills</h2>
-      <div className="space-y-6 mb-6">
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Skills</h2>
+      <div>
         {skillsInfo.map((skill, index) => (
-          <div key={index} className={skillsInfoStyles.item}>
+          <div key={index} className={styles.item}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Inputs
                 label="Skill Name"
@@ -425,15 +420,15 @@ export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, remo
               />
 
               <div>
-                <label className="block text-sm font-bold text-slate-300 mb-3">
+                <label className={styles.label}>
                   Proficiency ({skill.progress ? Math.round(skill.progress / 20) : 0}/5)
                 </label>
                 <div className="mt-2">
                   <RatingInput
                     value={skill.progress || 0}
                     total={5}
-                    color="#f59e0b"
-                    bgColor="#e2e8f0"
+                    color="#7C3AED"
+                    bgColor="#E5E7EB"
                     onChange={(newValue) => updateArrayItem(index, "progress", newValue)}
                   />
                 </div>
@@ -443,7 +438,7 @@ export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, remo
             {skillsInfo.length > 1 && (
               <button
                 type="button"
-                className={commonStyles.trashButton}
+                className={styles.trashButton}
                 onClick={() => removeArrayItem(index)}
               >
                 <Trash2 size={16} />
@@ -454,7 +449,7 @@ export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, remo
 
         <button
           type="button"
-          className={`${commonStyles.addButtonBase} ${skillsInfoStyles.addButton}`}
+          className={styles.addButton}
           onClick={() =>
             addArrayItem({
               name: "",
@@ -462,7 +457,7 @@ export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, remo
             })
           }
         >
-          <Plus size={16} /> Add Skill
+          <Plus size={18} /> Add Skill
         </button>
       </div>
     </div>
@@ -472,11 +467,11 @@ export const SkillsInfoForm = ({ skillsInfo, updateArrayItem, addArrayItem, remo
 // WorkExperienceForm Component
 export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={workExperienceStyles.container}>
-      <h2 className={workExperienceStyles.heading}>Work Experience</h2>
-      <div className="space-y-6 mb-6">
+    <div className={styles.container}>
+      <h2 className={styles.heading}>Work Experience</h2>
+      <div>
         {workExperience.map((experience, index) => (
-          <div key={index} className={workExperienceStyles.item}>
+          <div key={index} className={styles.item}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Inputs
                 label="Company"
@@ -508,10 +503,10 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-bold text-slate-300 mb-3">Description</label>
+              <label className={styles.label}>Description</label>
               <textarea
                 placeholder="What did you do in this role?"
-                className={workExperienceStyles.textarea}
+                className={styles.textarea}
                 rows={3}
                 value={experience.description || ""}
                 onChange={({ target }) => updateArrayItem(index, "description", target.value)}
@@ -521,7 +516,7 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
             {workExperience.length > 1 && (
               <button
                 type="button"
-                className={commonStyles.trashButton}
+                className={styles.trashButton}
                 onClick={() => removeArrayItem(index)}
               >
                 <Trash2 size={16} />
@@ -532,7 +527,7 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
 
         <button
           type="button"
-          className={`${commonStyles.addButtonBase} ${workExperienceStyles.addButton}`}
+          className={styles.addButton}
           onClick={() =>
             addArrayItem({
               company: "",
@@ -543,8 +538,7 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
             })
           }
         >
-          <Plus size={16} />
-          Add Work Experience
+          <Plus size={18} /> Add Work Experience
         </button>
       </div>
     </div>
@@ -554,17 +548,17 @@ export const WorkExperienceForm = ({ workExperience, updateArrayItem, addArrayIt
 // CustomSectionForm Component
 export const CustomSectionForm = ({ customSection, updateSection, updateArrayItem, addArrayItem, removeArrayItem }) => {
   return (
-    <div className={workExperienceStyles.container}>
-      <div className="flex items-center gap-4 mb-8">
+    <div className={styles.container}>
+      <div className="flex items-center gap-4 mb-6">
         <Inputs
           placeholder="Section Title (e.g. Awards)"
           value={customSection.title || ""}
           onChange={({ target }) => updateSection("title", target.value)}
         />
       </div>
-      <div className="space-y-6 mb-6">
+      <div>
         {customSection.items?.map((item, index) => (
-          <div key={index} className={workExperienceStyles.item}>
+          <div key={index} className={styles.item}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Inputs
                 label="Item Title"
@@ -591,10 +585,10 @@ export const CustomSectionForm = ({ customSection, updateSection, updateArrayIte
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-bold text-slate-300 mb-3">Description</label>
+              <label className={styles.label}>Description</label>
               <textarea
                 placeholder="Short description..."
-                className={workExperienceStyles.textarea}
+                className={styles.textarea}
                 rows={3}
                 value={item.description || ""}
                 onChange={({ target }) => updateArrayItem(index, "description", target.value)}
@@ -604,7 +598,7 @@ export const CustomSectionForm = ({ customSection, updateSection, updateArrayIte
             {customSection.items.length > 1 && (
               <button
                 type="button"
-                className={commonStyles.trashButton}
+                className={styles.trashButton}
                 onClick={() => removeArrayItem(index)}
               >
                 <Trash2 size={16} />
@@ -615,7 +609,7 @@ export const CustomSectionForm = ({ customSection, updateSection, updateArrayIte
 
         <button
           type="button"
-          className={`${commonStyles.addButtonBase} bg-gradient-to-r from-neon-pink to-neon-cyan`}
+          className={styles.addButton}
           onClick={() =>
             addArrayItem({
               title: "",
@@ -625,8 +619,7 @@ export const CustomSectionForm = ({ customSection, updateSection, updateArrayIte
             })
           }
         >
-          <Plus size={16} />
-          Add Item
+          <Plus size={18} /> Add Item
         </button>
       </div>
     </div>

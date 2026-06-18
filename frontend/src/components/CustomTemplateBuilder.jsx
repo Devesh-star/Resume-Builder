@@ -15,13 +15,13 @@ const SECTION_LABELS = {
 }
 
 const PRESET_COLORS = [
-  { name: 'Light Pink', value: '#E88FA2' },
+  { name: 'Light Pink', value: '#818CF8' },
   { name: 'Hot Pink', value: '#ff2d78' },
   { name: 'Violet', value: '#7c3aed' },
   { name: 'Amber', value: '#d97706' },
   { name: 'Emerald', value: '#059669' },
   { name: 'Rose', value: '#e11d48' },
-  { name: 'Blue', value: '#2563eb' },
+  { name: 'Blue', value: '#7C3AED' },
   { name: 'Teal', value: '#0d9488' },
 ]
 
@@ -77,8 +77,8 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
     <div className="space-y-6 p-4">
       {/* Layout Selection */}
       <div>
-        <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-neon-pink"></div>
+        <h3 className="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
           Layout
         </h3>
         <div className="grid grid-cols-3 gap-2">
@@ -91,13 +91,13 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
                 onClick={() => updateConfig('layout', opt.id)}
                 className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-xs font-medium ${
                   isActive
-                    ? 'border-neon-cyan bg-neon-cyan/10 text-neon-cyan'
-                    : 'border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300'
+                    ? 'border-secondary bg-secondary/10 text-secondary'
+                    : 'border-stone-200 bg-stone-50 text-indigo-400 hover:border-stone-300'
                 }`}
               >
                 <Icon size={18} />
                 <span>{opt.label}</span>
-                {isActive && <Check size={12} className="text-neon-cyan" />}
+                {isActive && <Check size={12} className="text-secondary" />}
               </button>
             )
           })}
@@ -106,8 +106,8 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
 
       {/* Header Style */}
       <div>
-        <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-neon-cyan"></div>
+        <h3 className="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-secondary"></div>
           Header Style
         </h3>
         <div className="grid grid-cols-3 gap-2">
@@ -120,13 +120,13 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
                 onClick={() => updateConfig('headerStyle', opt.id)}
                 className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-xs font-medium ${
                   isActive
-                    ? 'border-neon-pink bg-neon-pink/10 text-neon-pink'
-                    : 'border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-stone-200 bg-stone-50 text-indigo-400 hover:border-stone-300'
                 }`}
               >
                 <Icon size={18} />
                 <span>{opt.label}</span>
-                {isActive && <Check size={12} className="text-neon-pink" />}
+                {isActive && <Check size={12} className="text-primary" />}
               </button>
             )
           })}
@@ -135,8 +135,8 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
 
       {/* Accent Color */}
       <div>
-        <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-neon-pink to-neon-cyan"></div>
+        <h3 className="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-secondary"></div>
           Accent Color
         </h3>
         <div className="flex flex-wrap gap-2 mb-3">
@@ -153,21 +153,21 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-xs text-stone-500">Custom:</label>
+          <label className="text-xs text-indigo-400">Custom:</label>
           <input
             type="color"
-            value={config.accentColor || '#E88FA2'}
+            value={config.accentColor || '#818CF8'}
             onChange={(e) => updateConfig('accentColor', e.target.value)}
             className="w-8 h-8 rounded cursor-pointer border border-stone-200"
           />
-          <span className="text-xs text-stone-400 font-mono">{config.accentColor}</span>
+          <span className="text-xs text-indigo-500 font-mono">{config.accentColor}</span>
         </div>
       </div>
 
       {/* Section Visibility & Order */}
       <div>
-        <h3 className="text-sm font-bold text-stone-700 mb-3 flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-neon-pink"></div>
+        <h3 className="text-sm font-bold text-indigo-400 mb-3 flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
           Sections
         </h3>
         <div className="space-y-1.5">
@@ -185,10 +185,10 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
                   type="checkbox"
                   checked={config.visibleSections?.[section] !== false}
                   onChange={(e) => updateVisibleSection(section, e.target.checked)}
-                  className="w-4 h-4 rounded accent-neon-pink"
+                  className="w-4 h-4 rounded accent-primary"
                 />
                 <span className={`text-xs font-bold ${
-                  config.visibleSections?.[section] !== false ? 'text-stone-700' : 'text-stone-400 line-through'
+                  config.visibleSections?.[section] !== false ? 'text-indigo-400' : 'text-indigo-500 line-through'
                 }`}>
                   {dynamicSectionLabels[section]}
                 </span>
@@ -197,14 +197,14 @@ const CustomTemplateBuilder = ({ config, onChange, resumeData }) => {
                 <button
                   onClick={() => moveSection(index, -1)}
                   disabled={index === 0}
-                  className="p-1 rounded text-stone-400 hover:text-neon-pink disabled:opacity-30 transition-colors"
+                  className="p-1 rounded text-indigo-500 hover:text-primary disabled:opacity-30 transition-colors"
                 >
                   <ArrowUp size={12} />
                 </button>
                 <button
                   onClick={() => moveSection(index, 1)}
                   disabled={index === effectiveSectionOrder.length - 1}
-                  className="p-1 rounded text-stone-400 hover:text-neon-pink disabled:opacity-30 transition-colors"
+                  className="p-1 rounded text-indigo-500 hover:text-primary disabled:opacity-30 transition-colors"
                 >
                   <ArrowDown size={12} />
                 </button>

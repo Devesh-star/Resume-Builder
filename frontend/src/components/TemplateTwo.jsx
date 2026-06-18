@@ -68,25 +68,25 @@ const TemplateTwo = ({ resumeData = {}, containerWidth }) => {
           {contactInfo.phone && <span>{contactInfo.phone}</span>}
           
           {contactInfo.email && (
-            <a href={`mailto:${contactInfo.email}`} className="text-blue-600 hover:underline">
+            <a href={`mailto:${contactInfo.email}`} className="text-violet-600 hover:underline">
               {contactInfo.email}
             </a>
           )}
           
           {contactInfo.linkedin && (
-            <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline">
               LinkedIn
             </a>
           )}
           
           {contactInfo.github && (
-            <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline">
               GitHub
             </a>
           )}
           
           {contactInfo.website && (
-            <a href={contactInfo.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href={contactInfo.website} target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline">
               Portfolio
             </a>
           )}
@@ -139,10 +139,10 @@ const TemplateTwo = ({ resumeData = {}, containerWidth }) => {
                     <h3 className="font-bold text-gray-900">{proj.title}</h3>
                     <div className="flex gap-3 mt-0.5">
                       {proj.liveDemo && (
-                        <a href={proj.liveDemo} className="text-xs font-medium text-blue-600 hover:underline">Live Demo</a>
+                        <a href={proj.liveDemo} className="text-xs font-medium text-violet-600 hover:underline">Live Demo</a>
                       )}
                       {proj.github && (
-                        <a href={proj.github} className="text-xs font-medium text-blue-600 hover:underline">Source Code</a>
+                        <a href={proj.github} className="text-xs font-medium text-violet-600 hover:underline">Source Code</a>
                       )}
                     </div>
                   </div>

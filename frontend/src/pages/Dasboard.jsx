@@ -2,9 +2,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "../components/DashboardLayout";
-import { dashboardStyles as styles } from "../assets/dummystyle";
 import { useNavigate } from "react-router-dom";
-import { LucideFilePlus, LucideTrash, LucideTrash2 } from "lucide-react";
+import { LucideFilePlus, LucideTrash, LucideTrash2, Plus } from "lucide-react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
 import { ResumeSummaryCard } from "../components/Cards";
@@ -13,7 +12,6 @@ import { differenceInDays } from "date-fns";
 import Modal from "../components/Modal";
 import CreateResumeForm from "../components/CreateResumeForm";
 import PageTransition from "../components/PageTransition";
-
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -96,7 +94,7 @@ const Dashboard = () => {
 
     try {
       await axiosInstance.delete(API_PATHS.RESUME.DELETE(resumeToDelete))
-      toast.success('Resume delted succesfully')
+      toast.success('Resume deleted successfully')
       fetchAllResumes();
     } 
     catch (error) {
@@ -113,12 +111,12 @@ const Dashboard = () => {
   return (
     <PageTransition>
       <DashboardLayout>
-        <div className={styles.container}>
+        <div className="max-w-6xl mx-auto space-y-8">
           {/* Header */}
-          <div className={styles.headerWrapper}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-app-border shadow-sm">
             <div>
-              <h1 className={styles.headerTitle}>My Resume</h1>
-              <p className={styles.headerSubtitle}>
+              <h1 className="text-2xl font-extrabold text-text-main tracking-tight mb-1">My Resumes</h1>
+              <p className="text-text-muted text-sm font-medium">
                 {allResumes.length > 0
                   ? `You have ${allResumes.length} resume${
                       allResumes.length !== 1 ? "s" : ""
@@ -128,76 +126,65 @@ const Dashboard = () => {
             </div>
 
             <button
-              className={styles.createButton}
+              className="btn-primary flex items-center justify-center gap-2"
               onClick={() => setOpenCreateModal(true)}
             >
-              <div className={styles.createButtonOverlay}></div>
-              <span className={styles.createButtonContent}>
-                Create Now
-                <LucideFilePlus
-                  className="group-hover:translate-x-1 transition-transform"
-                  size={18}
-                />
-              </span>
+              <Plus size={18} />
+              Create New
             </button>
           </div>
 
           {/* Loading */}
           {loading && (
-            <div className={styles.spinnerWrapper}>
-              <div className={styles.spinner}></div>
+            <div className="flex items-center justify-center py-20">
+              <div className="w-10 h-10 border-4 border-secondary border-t-primary rounded-full animate-spin"></div>
             </div>
           )}
 
-          {/* Empty State (RESTORED – matches old UI) */}
+          {/* Empty State */}
           {!loading && allResumes.length === 0 && (
-            <div className={styles.emptyStateWrapper}>
-              <div className={styles.emptyIconWrapper}>
-                <LucideFilePlus size={32} className="text-neon-pink" />
+            <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white border border-dashed border-app-border rounded-3xl">
+              <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mb-6">
+                <LucideFilePlus size={32} className="text-primary" />
               </div>
 
-              <h3 className={styles.emptyTitle}>No Resumes Yet</h3>
+              <h3 className="text-2xl font-bold text-text-main mb-3">No Resumes Yet</h3>
 
-              <p className={styles.emptyText}>
+              <p className="text-text-muted max-w-md mx-auto mb-8">
                 You haven't created any resumes yet. Start creating professional
                 resumes to land your dream job.
               </p>
 
               <button
-                className={styles.createButton}
+                className="btn-primary flex items-center gap-2"
                 onClick={() => setOpenCreateModal(true)}
               >
-                <div className={styles.createButtonOverlay}></div>
-                <span className={styles.createButtonContent}>
-                  Create Your First Resume
-                  <LucideFilePlus
-                    className="group-hover:translate-x-1 transition-transform"
-                    size={20}
-                  />
-                </span>
+                Create Your First Resume
+                <Plus size={18} />
               </button>
             </div>
           )}
 
           {/* Resume Grid */}
           {!loading && allResumes.length > 0 && (
-            <div className={styles.grid}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               <div
-                className={styles.newResumeCard}
+                className="h-[360px] flex flex-col items-center justify-center bg-app-bg border-2 border-dashed border-app-border rounded-2xl cursor-pointer hover:border-primary hover:bg-secondary transition-all group"
                 onClick={() => setOpenCreateModal(true)}
               >
-                <div className={styles.newResumeIcon}>
-                  <LucideFilePlus size={32} className="text-white" />
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm text-text-muted group-hover:text-primary group-hover:scale-110 transition-all mb-4">
+                  <Plus size={32} />
                 </div>
-                <h3 className={styles.newResumeTitle}>Create New Resume</h3>
-                <p className={styles.newResumeText}>
-                  Start building your career
-                </p>
+                <h3 className="font-bold text-text-main text-lg mb-1">Create New</h3>
+                <p className="text-text-muted text-sm">Start from scratch</p>
               </div>
 
               {allResumes.map((resume, index) => (
-                <div
+                <motion.div
                   key={resume._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
                 >
                   <ResumeSummaryCard
                     imgUrl={resume.thumbnailLink} 
@@ -215,34 +202,47 @@ const Dashboard = () => {
                     onSelect={() => navigate(`/resume/${resume._id}`)}
                     onDelete={() => handleDeleteClick(resume._id)}
                   />
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
         </div>
+
         <Modal isOpen={openCreateModal} onClose={() => setOpenCreateModal(false)}
         title="Create New Resume" maxWidth='max-w-xl'>
           <div className="p-6">
-            <CreateResumeForm onSuccess = {() => {
+            <CreateResumeForm onSuccess={() => {
               setOpenCreateModal(false);
-              fetchAllResumes()
+              fetchAllResumes();
             }}/>
           </div>
-
         </Modal>
 
-        <Modal isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)} title='Confirm Deletion'
-        showActionBtn actionBtnText= 'Delete' actionBtnClassName = 'bg-red-600 hover:bg-red-700'
-        onActionClick={handleDeleteResume}>
-          <div className="p-4">
-            <div className="flex flex-col items-center text-center">
-              <div className={styles.deleteIconWrapper}>
-                <LucideTrash2 className='text-red-400' size={24}/>
+        <Modal isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)} title='Confirm Deletion' maxWidth='max-w-md'>
+          <div className="p-6">
+            <div className="flex flex-col items-center text-center mb-8">
+              <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mb-4">
+                <LucideTrash2 size={32}/>
               </div>
-              <h3 className={styles.deleteTitle}>Delete Resume?</h3>
-              <p className={styles.deleteText}>
-                Are you sure you want to delete this resume? this action can not be undone
+              <h3 className="text-xl font-bold text-text-main mb-2">Delete Resume?</h3>
+              <p className="text-text-muted">
+                Are you sure you want to delete this resume? This action cannot be undone.
               </p>
+            </div>
+            
+            <div className="flex items-center gap-3 w-full">
+              <button 
+                onClick={() => setShowDeleteConfirm(false)} 
+                className="flex-1 px-4 py-2.5 rounded-xl font-semibold border border-app-border text-text-main hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDeleteResume} 
+                className="flex-1 px-4 py-2.5 rounded-xl font-semibold bg-red-500 hover:bg-red-600 text-white transition-colors"
+              >
+                Delete Resume
+              </button>
             </div>
           </div>
         </Modal>

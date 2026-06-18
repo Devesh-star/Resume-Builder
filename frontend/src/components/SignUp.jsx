@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
-import { authStyles as styles } from "../assets/dummystyle";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { motion } from "framer-motion";
@@ -8,13 +6,15 @@ import { validateEmail } from "../utils/helper";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
 import { UserContext } from "../components/UserContext";
-import {Inputs} from "../components/Inputs";
+import { Inputs } from "../components/Inputs";
+import { FileText } from "lucide-react";
 
-const SignUp = ({ setCurrentPage }) => {
+const SignUp = ({ setCurrentPage, onSignUpSuccess }) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ const SignUp = ({ setCurrentPage }) => {
     }
 
     setError(null);
+    setLoading(true);
 
     try {
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
@@ -51,6 +52,9 @@ const SignUp = ({ setCurrentPage }) => {
       if (token) {
         localStorage.setItem("token", token);
         updateUser(response.data);
+        if (onSignUpSuccess) {
+          onSignUpSuccess();
+        }
         navigate("/dashboard");
       }
     } catch (err) {
@@ -58,6 +62,8 @@ const SignUp = ({ setCurrentPage }) => {
         err.response?.data?.message ||
           "Something went wrong. Please try again later"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,6 +80,9 @@ const SignUp = ({ setCurrentPage }) => {
       if (token) {
         localStorage.setItem("token", token);
         updateUser(response.data);
+        if (onSignUpSuccess) {
+          onSignUpSuccess();
+        }
         navigate("/dashboard");
       }
     } catch (err) {
@@ -86,19 +95,20 @@ const SignUp = ({ setCurrentPage }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={styles.signupContainer}
+      className="w-full"
     >
-      <div className={styles.headerWrapper}>
-        <h3 className={styles.signupTitle}>Join CV Pilot</h3>
-        <p className={styles.signupSubtitle}>
-          Join thousands of professionals today
-        </p>
+      <div className="text-center mb-8">
+        <div className="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center text-primary mx-auto mb-4">
+          <FileText size={24} />
+        </div>
+        <h3 className="text-2xl font-extrabold text-text-main tracking-tight">Create an account</h3>
+        <p className="text-text-muted mt-2">Join thousands of professionals today</p>
       </div>
 
-      <form onSubmit={handleSignUp} className={styles.signupForm}>
+      <form onSubmit={handleSignUp} className="space-y-4">
         <Inputs
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
@@ -110,8 +120,8 @@ const SignUp = ({ setCurrentPage }) => {
         <Inputs
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          label="Email"
-          placeholder="email@example.com"
+          label="Email Address"
+          placeholder="you@company.com"
           type="email"
         />
 
@@ -123,36 +133,46 @@ const SignUp = ({ setCurrentPage }) => {
           type="password"
         />
 
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {error && (
+          <div className="p-3 bg-error/10 border border-error/20 text-error text-sm rounded-lg flex items-center gap-2">
+            <span className="font-medium">Error:</span> {error}
+          </div>
+        )}
 
-        <button type="submit" className={styles.signupSubmit}>
-          Create Account
+        <button 
+          type="submit" 
+          className="btn-primary w-full py-3 text-base mt-2"
+          disabled={loading}
+        >
+          {loading ? "Creating Account..." : "Create Account"}
         </button>
 
-        <div className="auth-divider">
-          <span>or</span>
+        <div className="flex items-center gap-3 my-6">
+          <hr className="flex-1 border-app-border" />
+          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Or continue with</span>
+          <hr className="flex-1 border-app-border" />
         </div>
 
         <div className="flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSignUp}
             onError={() => setError("Google sign-up failed")}
-            theme="filled_black"
+            theme="outline"
             size="large"
-            shape="pill"
-            text="signup_with"
             width="100%"
+            text="signup_with"
+            shape="rectangular"
           />
         </div>
 
-        <p className={styles.switchText}>
+        <p className="text-center text-sm text-text-muted mt-8">
           Already have an account?{" "}
           <button
             type="button"
             onClick={() => setCurrentPage("login")}
-            className={styles.signupSwitchButton}
+            className="font-semibold text-primary hover:text-primary-hover transition-colors"
           >
-            Sign In
+            Sign in
           </button>
         </p>
       </form>

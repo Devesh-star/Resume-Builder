@@ -3,7 +3,7 @@ import { formatYearMonth } from "../utils/helper";
 
 const Title = ({ text }) => (
   <h2 className="text-lg font-bold text-gray-900 uppercase tracking-widest mb-4 pb-2 border-b-2 border-gray-100 flex items-center">
-    <span className="w-2 h-6 bg-[#D4577A] mr-3 inline-block"></span>
+    <span className="w-2 h-6 bg-[#4F46E5] mr-3 inline-block"></span>
     {text}
   </h2>
 );
@@ -37,7 +37,7 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
   const formatDescription = (desc) => {
     if (!desc) return null;
     return desc.split('\n').filter(line => line.trim().length > 0).map((line, i) => (
-      <li key={i} className="ml-5 list-disc text-[13px] text-gray-700 leading-relaxed mb-1.5 marker:text-[#D4577A]">
+      <li key={i} className="ml-5 list-disc text-[13px] text-gray-700 leading-relaxed mb-1.5 marker:text-[#4F46E5]">
         {line.replace(/^-/, '').trim()}
       </li>
     ));
@@ -62,7 +62,7 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
             {profileInfo.fullName}
           </h1>
           {profileInfo.designation && (
-            <p className="text-xl font-medium text-[#E88FA2] uppercase tracking-widest mb-6">
+            <p className="text-xl font-medium text-[#818CF8] uppercase tracking-widest mb-6">
               {profileInfo.designation}
             </p>
           )}
@@ -70,25 +70,25 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
           <div className="flex flex-wrap gap-4 text-sm text-gray-300 font-medium">
             {contactInfo.email && (
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#D4577A]/20 flex items-center justify-center text-[#E88FA2] text-xs">@</div>
+                <div className="w-5 h-5 rounded-full bg-[#4F46E5]/20 flex items-center justify-center text-[#818CF8] text-xs">@</div>
                 <span>{contactInfo.email}</span>
               </div>
             )}
             {contactInfo.phone && (
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#D4577A]/20 flex items-center justify-center text-[#E88FA2] text-xs">P</div>
+                <div className="w-5 h-5 rounded-full bg-[#4F46E5]/20 flex items-center justify-center text-[#818CF8] text-xs">P</div>
                 <span>{contactInfo.phone}</span>
               </div>
             )}
             {contactInfo.location && (
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#D4577A]/20 flex items-center justify-center text-[#E88FA2] text-xs">L</div>
+                <div className="w-5 h-5 rounded-full bg-[#4F46E5]/20 flex items-center justify-center text-[#818CF8] text-xs">L</div>
                 <span>{contactInfo.location}</span>
               </div>
             )}
             {contactInfo.linkedin && (
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-[#D4577A]/20 flex items-center justify-center text-[#E88FA2] text-xs">in</div>
+                <div className="w-5 h-5 rounded-full bg-[#4F46E5]/20 flex items-center justify-center text-[#818CF8] text-xs">in</div>
                 <a href={contactInfo.linkedin} className="hover:text-white">LinkedIn</a>
               </div>
             )}
@@ -122,7 +122,7 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
                       <div key={i}>
                         <h3 className="font-bold text-gray-900 text-base">{exp.role}</h3>
                         <div className="flex justify-between items-center mb-2">
-                          <p className="text-sm font-bold text-[#D4577A]">{exp.company}</p>
+                          <p className="text-sm font-bold text-[#4F46E5]">{exp.company}</p>
                           <span className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded">
                             {formatYearMonth(exp.startDate)} - {formatYearMonth(exp.endDate)}
                           </span>
@@ -139,11 +139,11 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
                   <Title text="Projects" />
                   <div className="space-y-6">
                     {projects.map((proj, i) => (
-                      <div key={i} className="bg-[#FAF5F0] p-4 rounded-lg border border-[#E88FA2]/20">
+                      <div key={i} className="bg-[#F8FAFC] p-4 rounded-lg border border-[#818CF8]/20">
                         <div className="flex justify-between items-center mb-2">
                           <h3 className="font-bold text-gray-900 text-sm">{proj.title}</h3>
                           <div className="flex gap-2">
-                            {proj.liveDemo && <a href={proj.liveDemo} className="text-[10px] font-bold text-white bg-[#D4577A] px-2 py-0.5 rounded">DEMO</a>}
+                            {proj.liveDemo && <a href={proj.liveDemo} className="text-[10px] font-bold text-white bg-[#4F46E5] px-2 py-0.5 rounded">DEMO</a>}
                             {proj.github && <a href={proj.github} className="text-[10px] font-bold text-white bg-gray-800 px-2 py-0.5 rounded">CODE</a>}
                           </div>
                         </div>
@@ -163,7 +163,7 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
                   <div className="flex flex-col gap-2">
                     {skills.map((s, i) => (
                       <div key={i} className="bg-gray-50 px-3 py-2 rounded text-[13px] font-bold text-gray-700 border border-gray-100 flex items-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#D4577A] mr-2"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#4F46E5] mr-2"></div>
                         {s.name}
                       </div>
                     ))}
@@ -195,7 +195,7 @@ const TemplateSeven = ({ resumeData = {}, containerWidth }) => {
                     {certifications.map((c, i) => (
                       <li key={i}>
                         <div className="font-bold text-gray-900 text-[13px]">{c.title}</div>
-                        <div className="text-[#D4577A] text-[11px] font-bold mt-0.5">{c.issuer} {c.year && `• ${c.year}`}</div>
+                        <div className="text-[#4F46E5] text-[11px] font-bold mt-0.5">{c.issuer} {c.year && `• ${c.year}`}</div>
                       </li>
                     ))}
                   </ul>

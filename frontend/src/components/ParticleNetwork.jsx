@@ -135,7 +135,7 @@ const ParticleNetwork = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ background: '#0a0508' }} // Deep dark background
+      style={{ background: '#EDE9FE' }} // Deep dark background
     />
   );
 };
