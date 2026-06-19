@@ -149,6 +149,7 @@ export const ResumeSummaryCard = ({
   completion = 0,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const formattedCreatedDate = createdAt
     ? new Date(createdAt).toLocaleDateString("en-US", {
@@ -198,9 +199,14 @@ export const ResumeSummaryCard = ({
 
       {/* Preview area */}
       <div className="p-5 flex-1 relative overflow-hidden bg-app-bg border-b border-app-border">
-        {imgUrl ? (
+        {imgUrl && !imageError ? (
            <div className="absolute inset-0">
-               <img src={imgUrl} alt="Resume Preview" className="w-full h-full object-cover object-top opacity-80" />
+               <img 
+                 src={imgUrl} 
+                 alt="Resume Preview" 
+                 className="w-full h-full object-cover object-top opacity-80" 
+                 onError={() => setImageError(true)}
+               />
                <div className="absolute inset-0 bg-gradient-to-t from-app-bg to-transparent"></div>
            </div>
         ) : (
