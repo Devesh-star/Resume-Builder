@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axiosInstance from "./utils/axiosInstance";
 import "./App.css";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
@@ -24,6 +25,21 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
+
+  useEffect(() => {
+    // Ping the backend to wake it up and keep it awake (useful for free tier hosting)
+    const pingBackend = () => {
+      axiosInstance.get('/').catch(() => {});
+    };
+    
+    // Initial ping on app load
+    pingBackend();
+    
+    // Ping every 10 minutes (600000 ms) to prevent it from sleeping while user is on the site
+    const intervalId = setInterval(pingBackend, 10 * 60 * 1000);
+    
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <UserProvider>
