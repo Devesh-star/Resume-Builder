@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import PageTransition from '../components/PageTransition';
-import { Target, FileText, CheckCircle, XCircle, Search, Loader2 } from 'lucide-react';
+import { Target, FileText, CheckCircle, XCircle, Search, Loader2, ChevronDown } from 'lucide-react';
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
 import toast from 'react-hot-toast';
@@ -13,6 +13,7 @@ const ATSReportsPage = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     fetchResumes();
@@ -79,17 +80,39 @@ const ATSReportsPage = () => {
                 {resumes.length === 0 ? (
                   <p className="text-sm text-text-muted italic bg-app-bg p-4 rounded-xl">No resumes found. Please create one first.</p>
                 ) : (
-                  <select 
-                    value={selectedResumeId}
-                    onChange={(e) => setSelectedResumeId(e.target.value)}
-                    className="form-input w-full cursor-pointer bg-app-bg border-app-border"
-                  >
-                    {resumes.map(resume => (
-                      <option key={resume._id} value={resume._id}>
-                        {resume.title || 'Untitled Resume'}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="w-full text-left bg-app-bg border border-app-border px-4 py-3 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 flex justify-between items-center group cursor-pointer hover:bg-secondary"
+                    >
+                      <span className="truncate pr-4 text-text-main font-semibold">
+                        {resumes.find(r => r._id === selectedResumeId)?.title || 'Untitled Resume'}
+                      </span>
+                      <ChevronDown size={18} className={`text-text-muted transition-transform duration-200 group-hover:text-primary ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {isDropdownOpen && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-app-border rounded-xl shadow-lg z-20 max-h-60 overflow-y-auto py-1 animate-fade-in">
+                          {resumes.map(resume => (
+                            <button
+                              key={resume._id}
+                              onClick={() => {
+                                setSelectedResumeId(resume._id);
+                                setIsDropdownOpen(false);
+                              }}
+                              className={`w-full text-left px-4 py-3 hover:bg-secondary transition-colors text-sm font-medium flex items-center justify-between ${selectedResumeId === resume._id ? 'text-primary bg-primary/5' : 'text-text-main'}`}
+                            >
+                              <span className="truncate">{resume.title || 'Untitled Resume'}</span>
+                              {selectedResumeId === resume._id && <CheckCircle size={16} className="text-primary shrink-0" />}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
 
