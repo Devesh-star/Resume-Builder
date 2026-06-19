@@ -109,8 +109,8 @@ const Dashboard = () => {
   }
 
   return (
-    <PageTransition>
-      <DashboardLayout>
+    <DashboardLayout>
+      <PageTransition>
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-app-border shadow-sm">
@@ -246,8 +246,8 @@ const Dashboard = () => {
             </div>
           </div>
         </Modal>
-      </DashboardLayout>
-    </PageTransition>
+      </PageTransition>
+    </DashboardLayout>
   );
 };
 

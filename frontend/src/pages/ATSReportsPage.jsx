@@ -58,8 +58,8 @@ const ATSReportsPage = () => {
   };
 
   return (
-    <PageTransition>
-      <DashboardLayout>
+    <DashboardLayout>
+      <PageTransition>
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-app-border shadow-sm">
             <div>
@@ -244,8 +244,8 @@ const ATSReportsPage = () => {
             </div>
           </div>
         </div>
-      </DashboardLayout>
-    </PageTransition>
+      </PageTransition>
+    </DashboardLayout>
   );
 };
 

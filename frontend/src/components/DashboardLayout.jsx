@@ -19,7 +19,7 @@ const DashboardLayout = ({ children, hideSidebar = false }) => {
     <div className='min-h-screen bg-app-bg flex'>
       {/* Sidebar */}
       {!hideSidebar && (
-        <aside className="w-64 bg-white border-r border-app-border fixed h-full flex flex-col z-10 hidden md:flex">
+        <aside className="w-64 bg-white border-r border-app-border fixed top-0 left-0 h-full flex flex-col z-10 hidden md:flex">
         <div className="h-16 flex items-center px-6 border-b border-app-border shrink-0">
           <Link to='/' className='flex items-center gap-2 group'>
             <div className='w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm'>

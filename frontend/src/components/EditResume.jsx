@@ -661,8 +661,8 @@ const EditResume = () => {
   }, [resumeId])
 
   return (
-    <PageTransition>
-      <DashboardLayout hideSidebar>
+    <DashboardLayout hideSidebar>
+      <PageTransition>
         <div className={styles.main}>
           <div className={styles.header}>
             <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -890,8 +890,8 @@ const EditResume = () => {
             />
           </div>
         </div>
-      </DashboardLayout>
-    </PageTransition>
+      </PageTransition>
+    </DashboardLayout>
   )
 }
 

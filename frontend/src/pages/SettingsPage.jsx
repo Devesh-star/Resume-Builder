@@ -22,8 +22,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <PageTransition>
-      <DashboardLayout>
+    <DashboardLayout>
+      <PageTransition>
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E5E7EB] shadow-sm">
             <div>
@@ -167,8 +167,8 @@ const SettingsPage = () => {
             </div>
           </div>
         </div>
-      </DashboardLayout>
-    </PageTransition>
+      </PageTransition>
+    </DashboardLayout>
   );
 };
 
