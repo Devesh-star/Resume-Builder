@@ -21,10 +21,10 @@ const ATSReportsPage = () => {
   const fetchResumes = async () => {
     try {
       const response = await axiosInstance.get(API_PATHS.RESUME.GET_ALL);
-      if (response.data && response.data.success) {
-        setResumes(response.data.data);
-        if (response.data.data.length > 0) {
-          setSelectedResumeId(response.data.data[0]._id);
+      if (Array.isArray(response.data)) {
+        setResumes(response.data);
+        if (response.data.length > 0) {
+          setSelectedResumeId(response.data[0]._id);
         }
       }
     } catch (error) {
