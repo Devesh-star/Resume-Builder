@@ -11,14 +11,15 @@ const SidebarItem = ({ icon: Icon, label, path, active }) => (
   </Link>
 )
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = ({ children, hideSidebar = false }) => {
   const { user } = useContext(UserContext)
   const location = useLocation()
 
   return (
     <div className='min-h-screen bg-app-bg flex'>
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-app-border fixed h-full flex flex-col z-10 hidden md:flex">
+      {!hideSidebar && (
+        <aside className="w-64 bg-white border-r border-app-border fixed h-full flex flex-col z-10 hidden md:flex">
         <div className="h-16 flex items-center px-6 border-b border-app-border shrink-0">
           <Link to='/' className='flex items-center gap-2 group'>
             <div className='w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm'>
@@ -45,9 +46,10 @@ const DashboardLayout = ({ children }) => {
           )}
         </div>
       </aside>
+      )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 flex flex-col min-h-screen max-w-[100vw]">
+      <main className={`flex-1 flex flex-col min-h-screen max-w-[100vw] ${!hideSidebar ? 'md:ml-64' : ''} overflow-x-hidden`}>
         {/* Mobile Header */}
         <div className="md:hidden h-16 bg-white border-b border-app-border flex items-center px-4 justify-between shrink-0">
            <Link to='/' className='flex items-center gap-2'>
