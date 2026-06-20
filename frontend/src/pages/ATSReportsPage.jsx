@@ -5,7 +5,7 @@ import { Target, FileText, CheckCircle, XCircle, Search, Loader2, ChevronDown } 
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
 import toast from 'react-hot-toast';
-import { calculateATSScore } from '../utils/atsScorer';
+import { calculateATSScore, calculateATSScoreFromText } from '../utils/atsScorer';
 
 const ATSReportsPage = () => {
   const [resumes, setResumes] = useState([]);
@@ -14,6 +14,8 @@ const ATSReportsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [report, setReport] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [uploadMode, setUploadMode] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   useEffect(() => {
     fetchResumes();
@@ -33,9 +35,13 @@ const ATSReportsPage = () => {
     }
   };
 
-  const handleAnalyze = () => {
-    if (!selectedResumeId) {
+  const handleAnalyze = async () => {
+    if (!uploadMode && !selectedResumeId) {
       toast.error("Please select a resume");
+      return;
+    }
+    if (uploadMode && !uploadedFile) {
+      toast.error("Please upload a PDF resume");
       return;
     }
     if (!jobDescription.trim()) {
@@ -46,15 +52,31 @@ const ATSReportsPage = () => {
     setIsLoading(true);
     setReport(null);
     
-    // Simulate API delay for better UX
-    setTimeout(() => {
-      const selectedResume = resumes.find(r => r._id === selectedResumeId);
-      if (selectedResume) {
-        const result = calculateATSScore(selectedResume, jobDescription);
+    try {
+      if (uploadMode) {
+        const formData = new FormData();
+        formData.append('resume', uploadedFile);
+
+        const response = await axiosInstance.post(API_PATHS.RESUME.PARSE_PDF, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        const parsedText = response.data.text;
+        const result = calculateATSScoreFromText(parsedText, jobDescription);
         setReport(result);
+      } else {
+        const selectedResume = resumes.find(r => r._id === selectedResumeId);
+        if (selectedResume) {
+          const result = calculateATSScore(selectedResume, jobDescription);
+          setReport(result);
+        }
       }
+    } catch (error) {
+      console.error("Analysis error:", error);
+      toast.error(error.response?.data?.message || "Failed to analyze resume");
+    } finally {
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
   return (
@@ -77,7 +99,41 @@ const ATSReportsPage = () => {
                   <FileText size={18} className="text-primary" />
                   1. Select Resume
                 </h3>
-                {resumes.length === 0 ? (
+
+                <div className="flex gap-2 mb-4 bg-app-bg p-1 rounded-xl">
+                  <button 
+                    onClick={() => setUploadMode(false)}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${!uploadMode ? 'bg-white shadow-sm text-primary' : 'text-text-muted hover:text-text-main'}`}
+                  >
+                    Existing Resume
+                  </button>
+                  <button 
+                    onClick={() => setUploadMode(true)}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${uploadMode ? 'bg-white shadow-sm text-primary' : 'text-text-muted hover:text-text-main'}`}
+                  >
+                    Upload PDF
+                  </button>
+                </div>
+
+                {uploadMode ? (
+                  <div className="border-2 border-dashed border-app-border rounded-xl p-6 text-center hover:bg-app-bg transition-colors cursor-pointer relative">
+                    <input 
+                      type="file" 
+                      accept=".pdf" 
+                      onChange={(e) => setUploadedFile(e.target.files[0])}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3">
+                      <FileText size={24} />
+                    </div>
+                    <p className="text-sm font-bold text-text-main mb-1">
+                      {uploadedFile ? uploadedFile.name : "Click or drag PDF here"}
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      {uploadedFile ? "Ready to scan" : "Only .pdf files are supported"}
+                    </p>
+                  </div>
+                ) : resumes.length === 0 ? (
                   <p className="text-sm text-text-muted italic bg-app-bg p-4 rounded-xl">No resumes found. Please create one first.</p>
                 ) : (
                   <div className="relative">

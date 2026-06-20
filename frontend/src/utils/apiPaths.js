@@ -15,6 +15,7 @@ export const API_PATHS = {
     UPDATE: (id) => `/api/resume/${id}`,
     DELETE: (id) => `/api/resume/${id}`,
     UPLOAD_IMAGES: (id) => `/api/resume/${id}/upload-images`,
+    PARSE_PDF: '/api/resume/parse-pdf',
   },
 
   IMAGE: {

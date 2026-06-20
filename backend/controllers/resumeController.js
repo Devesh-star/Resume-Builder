@@ -1,6 +1,7 @@
 import Resume from '../models/resumeModel.js'
 import fs from 'fs'
 import path from 'path'
+import pdf from 'pdf-parse'
 // import { threadCpuUsage } from 'process'
 
 export const createResume = async (req, res) => {
@@ -179,5 +180,18 @@ export const deleteResume = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: "Failed to delete resumes", error: error.message})
+}
+
+export const parsePdfResume = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No PDF file uploaded" });
+        }
+        
+        const data = await pdf(req.file.buffer);
+        res.status(200).json({ text: data.text });
+    } catch (error) {
+        console.error("Error parsing PDF:", error);
+        res.status(500).json({ message: "Failed to parse PDF", error: error.message });
     }
 }

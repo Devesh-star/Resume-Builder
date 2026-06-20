@@ -77,12 +77,11 @@ const extractKeywords = (text) => {
   return Array.from(keywords);
 };
 
-export const calculateATSScore = (resumeData, jobDescription) => {
-  if (!resumeData || !jobDescription) {
+export const calculateATSScoreFromText = (resumeText, jobDescription) => {
+  if (!resumeText || !jobDescription) {
     return { score: 0, matched: [], missing: [], formatting: true, actionVerbs: 'Moderate' };
   }
 
-  const resumeText = extractResumeText(resumeData);
   const jdKeywords = extractKeywords(jobDescription);
 
   if (jdKeywords.length === 0) {
@@ -93,8 +92,6 @@ export const calculateATSScore = (resumeData, jobDescription) => {
   const missing = [];
 
   jdKeywords.forEach(keyword => {
-    // If keyword exists in resume text
-    // Using simple includes. For strict boundaries: new RegExp(`\\b${keyword}\\b`, 'i').test(resumeText)
     if (resumeText.includes(keyword)) {
       matched.push(keyword);
     } else {
@@ -102,10 +99,8 @@ export const calculateATSScore = (resumeData, jobDescription) => {
     }
   });
 
-  // Score based purely on JD keyword density
   const score = Math.round((matched.length / jdKeywords.length) * 100);
 
-  // Simple heuristic for action verbs (check if any of these common verbs exist)
   const actionVerbsList = ['developed', 'managed', 'created', 'led', 'designed', 'implemented', 'improved', 'increased', 'reduced', 'saved'];
   let verbCount = 0;
   actionVerbsList.forEach(verb => {
@@ -119,8 +114,17 @@ export const calculateATSScore = (resumeData, jobDescription) => {
   return {
     score,
     matched,
-    missing: missing.slice(0, 15), // Don't return too many missing
-    formatting: true, // App templates are always ATS-friendly
+    missing: missing.slice(0, 15),
+    formatting: true,
     actionVerbs: actionVerbsStatus
   };
+};
+
+export const calculateATSScore = (resumeData, jobDescription) => {
+  if (!resumeData || !jobDescription) {
+    return { score: 0, matched: [], missing: [], formatting: true, actionVerbs: 'Moderate' };
+  }
+
+  const resumeText = extractResumeText(resumeData);
+  return calculateATSScoreFromText(resumeText, jobDescription);
 };
