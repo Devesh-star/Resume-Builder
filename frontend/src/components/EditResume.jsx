@@ -660,6 +660,9 @@ const EditResume = () => {
     }
   }, [resumeId])
 
+  const mobilePreviewWidth = typeof window !== 'undefined' ? Math.min(window.innerWidth - 64, 400) : 300;
+  const mobilePreviewScale = mobilePreviewWidth / 800;
+
   return (
     <DashboardLayout hideSidebar>
       <PageTransition>
@@ -702,6 +705,11 @@ const EditResume = () => {
               <button onClick={uploadResumeImages} disabled={isLoading} className={styles.btnSave}>
                 {isLoading ? <Loader2 size={16} className='animate-spin' /> : <Save size={16} />}
                 <span className='text-sm font-semibold'>{isLoading ? "Saving..." : "Save"}</span>
+              </button>
+
+              <button onClick={handleDeleteResume} disabled={isLoading} className={styles.btnDelete}>
+                <Trash2 size={16} />
+                <span className='text-sm font-semibold'>Delete</span>
               </button>
 
               <button onClick={downloadPDF} disabled={isLoading || isDownloading} className={`${styles.btnDownload} hidden lg:flex`}>
@@ -780,13 +788,26 @@ const EditResume = () => {
               </div>
             </div>
 
-            <div className='flex justify-center overflow-auto max-h-[75vh] w-full'>
-              <div ref={resumeDownloadRef} className='a4-wrapper shadow-2xl rounded-sm overflow-hidden' style={{ width: '210mm', minHeight: '297mm', backgroundColor: 'white' }}>
-                <div className='w-full h-full'>
-                  <RenderResume key={`pdf-${resumeData?.template?.theme}`}
+            <div className='flex justify-center overflow-auto max-h-[75vh] w-full custom-scrollbar'>
+              <div
+                style={{
+                  width: `${800 * mobilePreviewScale}px`,
+                  height: `${1056 * mobilePreviewScale}px`,
+                  flexShrink: 0,
+                }}
+              >
+                <div
+                  className='bg-white rounded-sm shadow-2xl shadow-slate-400/20 origin-top-left'
+                  style={{
+                    width: `800px`,
+                    height: `1056px`,
+                    transform: `scale(${mobilePreviewScale})`,
+                  }}
+                >
+                  <RenderResume key={`mobile-preview-${resumeData?.template?.theme}`}
                     templateId={resumeData?.template?.theme || ""}
                     resumeData={mergeWithDummyData(resumeData)}
-                    containerWidth={null}
+                    containerWidth={0}
                   />
                 </div>
               </div>
@@ -881,6 +902,18 @@ const EditResume = () => {
             </>
           )}
         </AnimatePresence>
+
+        <div style={{ position: 'absolute', top: '-10000px', left: '-10000px', pointerEvents: 'none' }}>
+          <div ref={resumeDownloadRef} className='a4-wrapper shadow-2xl rounded-sm overflow-hidden' style={{ width: '210mm', minHeight: '297mm', backgroundColor: 'white' }}>
+            <div className='w-full h-full'>
+              <RenderResume key={`pdf-${resumeData?.template?.theme}`}
+                templateId={resumeData?.template?.theme || ""}
+                resumeData={mergeWithDummyData(resumeData)}
+                containerWidth={null}
+              />
+            </div>
+          </div>
+        </div>
 
         <div style={{display:'none'}} ref={thumbnailRef}>
           <div className="w-[800px]">
