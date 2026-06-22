@@ -151,18 +151,18 @@ const ThemeSelector = ({ selectedTheme, setSelectedTheme, onClose, resumeData, c
 
   const PAGE_WIDTH = 800;
   const PAGE_HEIGHT = 1056;
-  const availableWidth = Math.max(previewDimensions.width - 48, 0);
-  const previewScale = Math.min(availableWidth / PAGE_WIDTH, 0.9);
+  const availableWidth = Math.max(previewDimensions.width, 0);
+  const previewScale = Math.min(availableWidth / PAGE_WIDTH, 1.0);
 
   return (
-    <div className='flex flex-col overflow-hidden bg-app-bg' style={{ height: '85vh' }}>
+    <div className='flex flex-col overflow-hidden bg-app-bg h-[calc(100vh-80px)] md:h-[85vh] rounded-2xl'>
       {/* Top bar */}
-      <div className='flex items-center justify-between gap-4 p-4 mx-6 mt-6 mb-4 bg-white rounded-2xl border border-app-border shadow-sm overflow-hidden shrink-0'>
-        <div className='min-w-0 shrink overflow-hidden'>
+      <div className='flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 mx-4 md:mx-6 mt-4 md:mt-6 mb-4 bg-white rounded-2xl border border-app-border shadow-sm overflow-hidden shrink-0'>
+        <div className='min-w-0 shrink overflow-hidden flex justify-center sm:justify-start'>
           <Tabs tabs={TAB_DATA} activeTab={tabValue} setActiveTab={settabValue} />
         </div>
         <button
-          className='btn-primary shrink-0 flex items-center gap-2 px-6 py-2.5 shadow-md shadow-primary/20 cursor-pointer whitespace-nowrap'
+          className='btn-primary shrink-0 flex items-center justify-center gap-2 px-6 py-2.5 shadow-md shadow-primary/20 cursor-pointer whitespace-nowrap'
           onClick={handleThemeSelection}
         >
           <Check size={18} /> Apply Theme
@@ -170,29 +170,30 @@ const ThemeSelector = ({ selectedTheme, setSelectedTheme, onClose, resumeData, c
       </div>
 
       {/* Main content — fills remaining height */}
-      <div className='flex gap-6 flex-1 min-h-0 overflow-hidden px-6 pb-6'>
+      <div className='flex flex-col md:flex-row gap-4 md:gap-6 flex-1 min-h-0 overflow-y-auto md:overflow-hidden px-4 md:px-6 pb-4 md:pb-6'>
 
         {/* Left: Template selector */}
-        <div className='w-[280px] min-w-[280px] max-w-[280px] shrink-0 flex flex-col min-h-0'>
-          <div className='bg-white rounded-2xl border border-app-border p-4 flex-1 min-h-0 overflow-hidden flex flex-col shadow-sm'>
+        <div className='w-full md:w-[280px] md:min-w-[280px] md:max-w-[280px] shrink-0 flex flex-col md:min-h-0'>
+          <div className='bg-white rounded-2xl border border-app-border p-4 flex-1 md:min-h-0 overflow-hidden flex flex-col shadow-sm'>
             <h3 className='text-xs font-bold text-text-muted uppercase tracking-wider mb-4 px-1 shrink-0'>
               {isCustomMode ? 'Builder Options' : `${resumeTemplates.length} Templates Available`}
             </h3>
             {isCustomMode ? (
-              <div className='flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar pr-2'>
+              <div className='flex-1 max-h-[40vh] md:max-h-none overflow-y-auto overflow-x-hidden custom-scrollbar pr-2'>
                 <CustomTemplateBuilder config={localCustomConfig} onChange={setLocalCustomConfig} resumeData={previewData} />
               </div>
             ) : (
-              <div className='grid grid-cols-2 gap-3 flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar p-1 pb-4'>
+              <div className='flex overflow-x-auto md:grid md:grid-cols-2 gap-3 flex-1 min-h-0 md:overflow-y-auto md:overflow-x-hidden custom-scrollbar p-1 pb-4 snap-x'>
                 {resumeTemplates.map((template, index) => (
-                  <MiniTemplatePreview
-                    key={`templates_${index}`}
-                    templateId={template.id}
-                    title={template.title}
-                    thumbnailImg={template.thumbnailImg}
-                    isSelected={selectedTemplate.index === index}
-                    onSelect={() => setselectedTemplate({ theme: template.id, index })}
-                  />
+                  <div key={`templates_${index}`} className="w-[140px] md:w-auto shrink-0 snap-start">
+                    <MiniTemplatePreview
+                      templateId={template.id}
+                      title={template.title}
+                      thumbnailImg={template.thumbnailImg}
+                      isSelected={selectedTemplate.index === index}
+                      onSelect={() => setselectedTemplate({ theme: template.id, index })}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -201,7 +202,7 @@ const ThemeSelector = ({ selectedTheme, setSelectedTheme, onClose, resumeData, c
 
         {/* Right: Full preview — flex-1 fills ALL remaining width */}
         <div
-          className='flex-1 min-w-0 min-h-0 rounded-2xl border border-app-border overflow-hidden flex flex-col relative'
+          className='flex-1 min-w-0 min-h-[500px] md:min-h-0 rounded-2xl border border-app-border overflow-hidden flex flex-col relative shrink-0'
           style={{ background: 'linear-gradient(135deg, #F8F9FB 0%, #E5E7EB 100%)' }}
         >
           {/* Preview label */}
@@ -212,9 +213,8 @@ const ThemeSelector = ({ selectedTheme, setSelectedTheme, onClose, resumeData, c
             </span>
           </div>
 
-          {/* Resume page */}
           <div
-            className='flex-1 min-h-0 flex items-start justify-center overflow-y-auto overflow-x-hidden custom-scrollbar p-6'
+            className='flex-1 min-h-0 flex items-start justify-center overflow-y-auto overflow-x-hidden custom-scrollbar p-2 md:p-6'
             ref={measureRef}
           >
             <div

@@ -38,12 +38,12 @@ const styles = {
   formPanel: "h-full overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8 bg-app-bg",
   previewPanel: "hidden lg:flex flex-col h-full bg-secondary border-l border-app-border p-8 overflow-y-auto custom-scrollbar relative",
   previewInner: "flex justify-center w-full max-w-[850px] mx-auto bg-white shadow-xl min-h-[1056px]",
-  btnTheme: "btn-outline flex items-center gap-2",
-  btnAts: "btn-primary bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2",
-  btnDelete: "btn-outline text-error hover:bg-error hover:text-white flex items-center gap-2 border-transparent hover:border-error",
-  btnDownload: "btn-primary flex items-center gap-2",
-  btnBack: "btn-outline flex items-center gap-2 text-text-muted hover:text-text-main border-transparent",
-  btnSave: "btn-outline flex items-center gap-2 bg-white",
+  btnTheme: "btn-outline flex items-center justify-center gap-2 shrink-0 whitespace-nowrap",
+  btnAts: "btn-primary bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shrink-0 whitespace-nowrap",
+  btnDelete: "btn-outline text-error hover:bg-error hover:text-white flex items-center justify-center gap-2 border-transparent hover:border-error shrink-0 whitespace-nowrap",
+  btnDownload: "btn-primary flex items-center justify-center gap-2 shrink-0 whitespace-nowrap",
+  btnBack: "btn-outline flex items-center justify-center gap-2 text-text-muted hover:text-text-main border-transparent shrink-0 whitespace-nowrap",
+  btnSave: "btn-outline flex items-center justify-center gap-2 bg-white shrink-0 whitespace-nowrap",
   modalBadge: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20",
   pulseDot: "w-2 h-2 rounded-full bg-primary animate-pulse"
 }
@@ -680,11 +680,11 @@ const EditResume = () => {
                 }))} />
             </div>
 
-            <div className='flex items-center gap-2 lg:gap-3 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0'>
+            <div className='grid grid-cols-2 sm:flex sm:items-center gap-2 lg:gap-3 w-full sm:w-auto pb-2 sm:pb-0 mt-3 sm:mt-0'>
               
               <button onClick={() => setOpenThemeSelector(true)} className={styles.btnTheme}>
                 <Palette size={16} />
-                <span className='text-sm hidden sm:block'>Theme</span>
+                <span className='text-sm font-semibold'>Theme</span>
               </button>
 
               <button onClick={() => setOpenAtsDrawer(true)} className={styles.btnAts}>
@@ -694,19 +694,19 @@ const EditResume = () => {
 
               <button onClick={() => setOpenPreviewModal(true)} className={`${styles.btnDownload} lg:hidden`}>
                 <Download size={16} />
-                <span className='text-sm'>Preview</span>
+                <span className='text-sm font-semibold'>Preview</span>
               </button>
 
               <div className="w-px h-6 bg-app-border mx-1 hidden sm:block"></div>
               
               <button onClick={uploadResumeImages} disabled={isLoading} className={styles.btnSave}>
                 {isLoading ? <Loader2 size={16} className='animate-spin' /> : <Save size={16} />}
-                <span className='text-sm hidden sm:block'>{isLoading ? "Saving..." : "Save"}</span>
+                <span className='text-sm font-semibold'>{isLoading ? "Saving..." : "Save"}</span>
               </button>
 
               <button onClick={downloadPDF} disabled={isLoading || isDownloading} className={`${styles.btnDownload} hidden lg:flex`}>
                 {isDownloading ? <Loader2 size={16} className='animate-spin' /> : <Download size={16} />}
-                <span className='text-sm hidden sm:block'>Download</span>
+                <span className='text-sm font-semibold'>Download</span>
               </button>
             </div>
           </div>
