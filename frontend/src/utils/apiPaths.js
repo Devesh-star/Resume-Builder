@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://resume-backend-gsv8.onrender.com';
+// export const BASE_URL = 'https://resume-backend-gsv8.onrender.com';
+export const BASE_URL = 'http://localhost:4000';
 
 export const API_PATHS = {
   AUTH: {
@@ -16,6 +17,7 @@ export const API_PATHS = {
     DELETE: (id) => `/api/resume/${id}`,
     UPLOAD_IMAGES: (id) => `/api/resume/${id}/upload-images`,
     PARSE_PDF: '/api/resume/parse-pdf',
+    ANALYZE_ATS: '/api/resume/analyze-ats',
   },
 
   IMAGE: {

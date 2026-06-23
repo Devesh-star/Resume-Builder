@@ -1,6 +1,6 @@
 import express from 'express';
 import {protect} from '../middleware/authMiddleware.js';
-import {createResume, deleteResume, getResumeById, getUserResumes, updateResume, parsePdfResume} from '../controllers/resumeController.js'
+import {createResume, deleteResume, getResumeById, getUserResumes, updateResume, parsePdfResume, generateAtsReport} from '../controllers/resumeController.js'
 import {uploadResumeImages} from '../controllers/uploadImages.js'
 import multer from 'multer';
 
@@ -14,6 +14,7 @@ const pdfUpload = multer({
 
 const resumeRouter = express.Router();
 resumeRouter.post("/parse-pdf", protect, pdfUpload.single('resume'), parsePdfResume);
+resumeRouter.post("/analyze-ats", protect, generateAtsReport);
 resumeRouter.post("/", protect, createResume);
 resumeRouter.get("/", protect, getUserResumes);
 resumeRouter.get("/:id", protect, getResumeById);

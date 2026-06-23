@@ -5,7 +5,7 @@ import { Target, FileText, CheckCircle, XCircle, Search, Loader2, ChevronDown } 
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
 import toast from 'react-hot-toast';
-import { calculateATSScore, calculateATSScoreFromText } from '../utils/atsScorer';
+import { extractResumeText } from '../utils/atsScorer';
 
 const ATSReportsPage = () => {
   const [resumes, setResumes] = useState([]);
@@ -53,23 +53,31 @@ const ATSReportsPage = () => {
     setReport(null);
     
     try {
+      let resumeText = '';
+
       if (uploadMode) {
         const formData = new FormData();
         formData.append('resume', uploadedFile);
 
-        const response = await axiosInstance.post(API_PATHS.RESUME.PARSE_PDF, formData, {
+        const parseResponse = await axiosInstance.post(API_PATHS.RESUME.PARSE_PDF, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-
-        const parsedText = response.data.text;
-        const result = calculateATSScoreFromText(parsedText, jobDescription);
-        setReport(result);
+        resumeText = parseResponse.data.text;
       } else {
         const selectedResume = resumes.find(r => r._id === selectedResumeId);
         if (selectedResume) {
-          const result = calculateATSScore(selectedResume, jobDescription);
-          setReport(result);
+          resumeText = extractResumeText(selectedResume);
         }
+      }
+
+      if (resumeText) {
+        const analyzeResponse = await axiosInstance.post(API_PATHS.RESUME.ANALYZE_ATS, {
+          resumeText,
+          jobDescription
+        });
+        setReport(analyzeResponse.data);
+      } else {
+        toast.error("Could not extract text from the resume.");
       }
     } catch (error) {
       console.error("Analysis error:", error);
@@ -231,6 +239,17 @@ const ATSReportsPage = () => {
                         'Low match. Your resume needs significant tailoring for this role.'}
                      </p>
                   </div>
+
+                  {report.feedback && (
+                    <div className="bg-primary/10 border-b border-primary/20 p-6 flex flex-col gap-2">
+                      <h4 className="text-primary font-bold flex items-center gap-2">
+                        ✨ AI Recruiter Feedback
+                      </h4>
+                      <p className="text-text-main text-sm leading-relaxed font-medium">
+                        {report.feedback}
+                      </p>
+                    </div>
+                  )}
 
                   <div className="p-8 space-y-8">
                     

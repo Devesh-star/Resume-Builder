@@ -11,7 +11,7 @@ const STOP_WORDS = new Set([
   'good', 'excellent', 'ability', 'able', 'knowledge', 'understanding', 'using'
 ]);
 
-const extractResumeText = (resume) => {
+export const extractResumeText = (resume) => {
   let text = [];
 
   // Profile Info
